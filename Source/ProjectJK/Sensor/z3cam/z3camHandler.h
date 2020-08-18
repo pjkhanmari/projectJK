@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "CR2_ballposition.h"
 #include "z3camHandler.generated.h"
 
 /**
@@ -224,27 +224,30 @@ class PROJECTJK_API Uz3camHandler : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
-// 	UFUNCTION(BlueprintCallable, Category = "z3cam")
-// 		static FString GetVersion();
-// 	UFUNCTION(BlueprintCallable, Category = "z3cam")
-// 		static int SetHeightIncline(int height, int vangleadd);
-// 	UFUNCTION(BlueprintCallable, Category = "z3cam")
-// 		static int ConfigureCamSensor(int usage);
-// 	UFUNCTION(BlueprintCallable, Category = "z3cam")
-// 		static int Set_Tee(int usage, double height);
-// 	UFUNCTION(BlueprintCallable, Category = "z3cam")
-// 		static int Set_Club(int clubcode);
-// 	UFUNCTION(BlueprintCallable, Category = "z3cam")
-// 		static int Set_Wind(float mag, float dir);
-// 	UFUNCTION(BlueprintCallable, Category = "z3cam")
-// 		static int  Set_MainHand(int _hand);
-// 	UFUNCTION(BlueprintCallable, Category = "z3cam")
-// 		static int SetTeeState(int p0, int p1);
-// 	UFUNCTION(BlueprintCallable, Category = "z3cam")
-// 		static int GetSensorState(int* state);
-// 	UFUNCTION(BlueprintCallable, Category = "z3cam")
-// 		static int AllowArea(int tee, int ground, int putting);
-// 	UFUNCTION(BlueprintCallable, Category = "z3cam")
-// 		static int CheckBallPosition(_CR2_ballposition &tee, _CR2_ballposition &ground, _CR2_ballposition &putting);
+	UFUNCTION(BlueprintCallable, Category = "z3cam")
+		static FString GetVersion();
+	UFUNCTION(BlueprintCallable, Category = "z3cam")
+		static int SetHeightIncline(int height, int vangleadd);
+	UFUNCTION(BlueprintCallable, Category = "z3cam")
+		static int ConfigureCamSensor(int usage);
+	UFUNCTION(BlueprintCallable, Category = "z3cam")
+		static int Set_Tee(int usage, float height);
+	UFUNCTION(BlueprintCallable, Category = "z3cam")
+		static int Set_Club(int clubcode);
+	UFUNCTION(BlueprintCallable, Category = "z3cam")
+		static int Set_Wind(float mag, float dir);
+	UFUNCTION(BlueprintCallable, Category = "z3cam")
+		static int  Set_MainHand(int _hand);
+	UFUNCTION(BlueprintCallable, Category = "z3cam")
+		static int SetTeeState(int p0, int p1);
+	UFUNCTION(BlueprintCallable, Category = "z3cam")
+		static int GetSensorState(int &state);
+	UFUNCTION(BlueprintCallable, Category = "z3cam")
+		static int AllowArea(int tee, int ground, int putting);
+	UFUNCTION(BlueprintCallable, Category = "z3cam")
+		static int CheckBallPosition(FCR2_ballposition &tee, FCR2_ballposition &ground, FCR2_ballposition &putting);
+	
+public:
+	static int* hand;
 	
 };

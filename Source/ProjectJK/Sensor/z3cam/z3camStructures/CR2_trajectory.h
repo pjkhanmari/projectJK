@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CR2_point.h"
+#include "CR2_trajectory.generated.h"
 
 
 

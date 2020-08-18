@@ -65,7 +65,7 @@ bool z3camSDK::import_initMethod()
 	return false;    // Return an error.
 }
 
-void* z3camSDK::CR2_init(unsigned int sensorcode, unsigned int sensornum, long long p0, long long p1, long long p2, long long p3)
+void* z3camSDK::CR2_init(int sensorcode, int sensornum, long long &p0, long long &p1, long long &p2, long long &p3)
 {
 	if (m_cr2_init != NULL)
 		return m_cr2_init(sensorcode, sensornum, p0, p1, p2, p3);
