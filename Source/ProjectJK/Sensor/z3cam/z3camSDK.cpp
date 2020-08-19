@@ -11,9 +11,9 @@ z3camSDK::~z3camSDK()
 {
 }
 
-typedef void*(*_get_cr2_init)(unsigned int sensorcode, unsigned int sensornum, long long p0, long long p1, long long p2, long long p3);
+typedef void*(*_get_cr2_init)(int sensorcode, int sensornum, long long p0, long long p1, long long p2, long long p3);
 typedef int(*_get_cr2_delete)(void* hand);
-typedef int(*_get_cr2_command)(void* h, unsigned int cmd, int p0, int p1, int p2, int p3);
+typedef int(*_get_cr2_command)(void* h, unsigned int cmd, long long p0, long long p1, long long p2, long long p3);
 
 _get_cr2_init m_cr2_init;
 _get_cr2_delete m_cr2_delete;
@@ -65,7 +65,7 @@ bool z3camSDK::import_initMethod()
 	return false;    // Return an error.
 }
 
-void* z3camSDK::CR2_init(int sensorcode, int sensornum, long long &p0, long long &p1, long long &p2, long long &p3)
+void* z3camSDK::CR2_init(int sensorcode, int sensornum, long long p0, long long p1, long long p2, long long p3)
 {
 	if (m_cr2_init != NULL)
 		return m_cr2_init(sensorcode, sensornum, p0, p1, p2, p3);
@@ -109,7 +109,7 @@ bool z3camSDK::import_commandMethod()
 	return false;    // Return an error.
 }
 
-int z3camSDK::CR2_command(void* h, unsigned int cmd, int p0, int p1, int p2, int p3)
+int z3camSDK::CR2_command(void* h, unsigned int cmd, long long p0, long long p1, long long p2, long long p3)
 {
 	if (m_cr2_command != NULL)
 		return m_cr2_command(h, cmd, p0, p1, p2, p3);

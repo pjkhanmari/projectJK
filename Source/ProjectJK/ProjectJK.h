@@ -4,3 +4,5 @@
 
 #include "CoreMinimal.h"
 
+//Sensor Log
+DECLARE_LOG_CATEGORY_EXTERN(LogSensor, Log, All);

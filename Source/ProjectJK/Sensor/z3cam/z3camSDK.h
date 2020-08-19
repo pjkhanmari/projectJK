@@ -18,11 +18,11 @@ public:
 	static void freeDLL();
 
 	static bool import_initMethod();
-	static void* CR2_init(int sensorcode, int sensornum, long long &p0, long long &p1, long long &p2, long long &p3);
+	static void* CR2_init(int sensorcode, int sensornum, long long p0, long long p1, long long p2, long long p3);
 
 	static bool import_deleteMethod();
 	static int CR2_delete(void* hand);
 
 	static bool import_commandMethod();
-	static int CR2_command(void* h, unsigned int cmd, int p0, int p1, int p2, int p3);
+	static int CR2_command(void* h, unsigned int cmd, long long p0, long long p1, long long p2, long long p3);
 };

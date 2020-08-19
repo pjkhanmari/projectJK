@@ -3,7 +3,11 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
-#include "CR2_ballposition.h"
+#include "ProjectJK/Sensor/z3cam/z3camStructures/CR2_ballposition.h"
+#include "ProjectJK/Sensor/z3cam/z3camStructures/CR2_shotdata.h"
+#include "ProjectJK/Sensor/z3cam/z3camStructures/CR2_shotdataEX.h"
+#include "ProjectJK/Sensor/z3cam/z3camStructures/CR2_guid.h"
+#include "Windows/WindowsSystemIncludes.h"
 #include "z3camHandler.generated.h"
 
 /**
@@ -218,36 +222,95 @@
 #define SPDIR_DW				7
 #define SPDIR_NW				8
 
+typedef int*					HAND;
+typedef	long long				I64;
+typedef unsigned int			U32;
+typedef signed int				I32;
+
+#define GET_VARIABLE_NAME(Variable) (#Variable)
+
+// typedef int(CALLBACK CR2_CALLBACKFUNC) (HAND h, U32 status, FCR2_shotdata *psd, I32 userparam);
+// typedef int(CALLBACK CR2_CALLBACKFUNC1) (HAND h, U32 status, HAND hsd, U32 cbfuncid, I64 userparam);
+
+ HAND hand = nullptr;
+
 UCLASS()
-class PROJECTJK_API Uz3camHandler : public UBlueprintFunctionLibrary
+class PROJECTJK_API Uz3camHandler : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "z3cam")
-		static FString GetVersion();
-	UFUNCTION(BlueprintCallable, Category = "z3cam")
-		static int SetHeightIncline(int height, int vangleadd);
-	UFUNCTION(BlueprintCallable, Category = "z3cam")
-		static int ConfigureCamSensor(int usage);
-	UFUNCTION(BlueprintCallable, Category = "z3cam")
-		static int Set_Tee(int usage, float height);
-	UFUNCTION(BlueprintCallable, Category = "z3cam")
-		static int Set_Club(int clubcode);
-	UFUNCTION(BlueprintCallable, Category = "z3cam")
-		static int Set_Wind(float mag, float dir);
-	UFUNCTION(BlueprintCallable, Category = "z3cam")
-		static int  Set_MainHand(int _hand);
-	UFUNCTION(BlueprintCallable, Category = "z3cam")
-		static int SetTeeState(int p0, int p1);
-	UFUNCTION(BlueprintCallable, Category = "z3cam")
-		static int GetSensorState(int &state);
-	UFUNCTION(BlueprintCallable, Category = "z3cam")
-		static int AllowArea(int tee, int ground, int putting);
-	UFUNCTION(BlueprintCallable, Category = "z3cam")
-		static int CheckBallPosition(FCR2_ballposition &tee, FCR2_ballposition &ground, FCR2_ballposition &putting);
-	
-public:
-	static int* hand;
-	
+	int (WINAPI CR2_CALLBACKFUNC)(HAND h, U32 status, FCR2_shotdata *psd, I32 userparam);
+	int (WINAPI CR2_CALLBACKFUNC1) (HAND h, U32 status, HAND hsd, U32 cbfuncid, I64 userparam);
+	/// <summary>
+	/// Get version of CR2 Interface API dll
+	/// </summary>
+	FString GetVersion();
+
+	/// <summary>
+	/// Set Lamp height and base value of incline
+	/// height : Height between sensor and lamp. Unit : cm
+	/// vangleadd : Base value of incline. Unit : degree
+	/// </summary>
+	void SetHeightIncline(I64 height, I64 vangleadd);
+
+	/// <summary>
+	/// Set usage of Camera Sensor
+	/// usage : camera sensor usage 0 -> Do not use, 1 -> Use
+	/// </summary>
+	void ConfigureCamSensor(I64 usage);
+
+	/// <summary>
+	/// Usage of tee for current shot and set tee height
+	/// usage : 0->No Use, 1->Use
+	/// height : tee height. Unit : 1/1000m
+	/// </summary>
+	void Set_Tee(I64 usage, float height);
+
+	/// <summary>
+	/// Set Club
+	/// clubcode : DRIVER->1, IRON7->17, PUTTER->30
+	/// </summary>
+	void Set_Club(I64 clubcode);
+
+	/// <summary>
+	/// Set Wind information
+	/// mag : Wind velocity. Unit : 1/10ms
+	/// dir : Direction of WInd. Unit : degree ( Direction reference is target line and increase clockwise)
+	/// </summary>
+	void Set_Wind(float mag, float dir);
+
+	/// <summary>
+	/// Set Main Hand
+	/// hand : 1 is LEFT handed, 0 is RIGHT handed
+	/// </summary>
+	void  Set_MainHand(I64 _hand);
+
+	/// <summary>
+	/// Set Tee State?
+	/// </summary>
+	void SetTeeState(I64 p0, I64 p1);
+
+	/// <summary>
+	/// Get current operation status of Sensor
+	/// state should allocate 4 byte
+	/// </summary>
+	/// <returns>
+	/// status value of Sensor operation
+	/// </returns>
+	int GetSensorState();
+
+	/// <summary>
+	/// Set allow Area to Sensor. tee area, ground area, putting area
+	/// whole three area : 0 -> Not allow, 1 -> Allow
+	/// </summary>
+	void AllowArea(I64 tee, I64 ground, I64 putting);
+
+	/// <summary>
+	/// Check ball position and existing in area
+	/// exist check tee, ground, putting area, also check detail position on x, y, z property
+	/// </summary>
+	void CheckBallPosition();
+
+	void PrintResult(int title, int result, bool showLog = true);
 };
