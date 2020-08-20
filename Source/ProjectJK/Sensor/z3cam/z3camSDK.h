@@ -3,26 +3,37 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "z3camSDK.generated.h"
 
 /**
  * 
  */
-class PROJECTJK_API z3camSDK
+UCLASS()
+class PROJECTJK_API Uz3camSDK : public UObject
 {
+	GENERATED_BODY()
 public:
-	z3camSDK();
-	~z3camSDK();
+	Uz3camSDK();
+	~Uz3camSDK();
 
 public:
 	static bool importDLL(FString folder, FString name);
 	static void freeDLL();
 
 	static bool import_initMethod();
-	static void* CR2_init(int sensorcode, int sensornum, long long p0, long long p1, long long p2, long long p3);
+#if defined(_WIN64)
+	static void* CR2_init(uint32 sensorcode, uint32 sensornum, int64 p0, int64 p1, int64 p2, int64 p3);
+#else
+	static void* CR2_init(uint32 sensorcode, uint32 sensornum, int32 p0, int32 p1, int32 p2, int32 p3);
+#endif
 
 	static bool import_deleteMethod();
 	static int CR2_delete(void* hand);
 
 	static bool import_commandMethod();
-	static int CR2_command(void* h, unsigned int cmd, long long p0, long long p1, long long p2, long long p3);
+#if defined(_WIN64)
+	static int CR2_command(void* h, uint32 cmd, int64 p0, int64 p1, int64 p2, int64 p3);
+#else
+	static int CR2_command(void* h, uint32 cmd, int32 p0, int32 p1, int32 p2, int32 p3);
+#endif
 };

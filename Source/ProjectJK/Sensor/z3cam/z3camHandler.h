@@ -79,6 +79,7 @@
 #define	CR2CMD_OPERATION_STOP		0x00000011
 #define	CR2CMD_OPERATION_RESTART	0x00000012					
 #define	CR2CMD_OPERATION_ACTIVATE	0x00000013				// p0,  0: Power-Saving mode,  1: Normal Mode
+#define	CR2CMD_OPERATION_START1		0x00000014				// p0: callbackfuncion1.   p1: callbackfunction1_id p1; user param.
 #define	CR2CMD_USETEE				0x00000020
 #define	CR2CMD_USECLUB				0x00000021
 #define	CR2CMD_WIND					0x00000022
@@ -222,17 +223,24 @@
 #define SPDIR_DW				7
 #define SPDIR_NW				8
 
-typedef int*					HAND;
-typedef	long long				I64;
-typedef unsigned int			U32;
-typedef signed int				I32;
+//  Contact Creatz Inc. for valid ccode.            
+#define		IANA_OPMODE_DEFAULT				0x0000
+#define		IANA_OPMODE_CAM					0x0001
+#define		IANA_OPMODE_FILE				0x0002
 
 #define GET_VARIABLE_NAME(Variable) (#Variable)
 
-// typedef int(CALLBACK CR2_CALLBACKFUNC) (HAND h, U32 status, FCR2_shotdata *psd, I32 userparam);
-// typedef int(CALLBACK CR2_CALLBACKFUNC1) (HAND h, U32 status, HAND hsd, U32 cbfuncid, I64 userparam);
+USTRUCT(BlueprintType)
+struct FHAND {
 
- HAND hand = nullptr;
+	GENERATED_USTRUCT_BODY()
+
+public:
+	void* h;
+	TArray<uint32> ccode;
+};
+
+static FHAND hand;
 
 UCLASS()
 class PROJECTJK_API Uz3camHandler : public UObject
@@ -240,8 +248,21 @@ class PROJECTJK_API Uz3camHandler : public UObject
 	GENERATED_BODY()
 
 public:
-	int (WINAPI CR2_CALLBACKFUNC)(HAND h, U32 status, FCR2_shotdata *psd, I32 userparam);
-	int (WINAPI CR2_CALLBACKFUNC1) (HAND h, U32 status, HAND hsd, U32 cbfuncid, I64 userparam);
+#if defined(_WIN64)
+	int32 (WINAPI CR2_CALLBACKFUNC)(void* h, uint32 status, FCR2_shotdata *psd, int64 userparam);
+#else
+	int32 (WINAPI CR2_CALLBACKFUNC)(void* h, uint32 status, FCR2_shotdata *psd, int32 userparam);
+#endif
+
+#if defined(_WIN64)
+	static int32 (WINAPI CR2_CALLBACKFUNC1)(void* h, uint32 status, void* hsd, uint32 cbfuncid, int64 userparam);
+#else
+	int32 (WINAPI CR2_CALLBACKFUNC1)(void* h, uint32 status, void* hsd, uint32 cbfuncid, int32 userparam);
+#endif
+
+	void InitSensor();
+
+	void StartSensor();
 	/// <summary>
 	/// Get version of CR2 Interface API dll
 	/// </summary>
@@ -252,26 +273,26 @@ public:
 	/// height : Height between sensor and lamp. Unit : cm
 	/// vangleadd : Base value of incline. Unit : degree
 	/// </summary>
-	void SetHeightIncline(I64 height, I64 vangleadd);
+	void SetHeightIncline(int64 height, int64 vangleadd);
 
 	/// <summary>
 	/// Set usage of Camera Sensor
 	/// usage : camera sensor usage 0 -> Do not use, 1 -> Use
 	/// </summary>
-	void ConfigureCamSensor(I64 usage);
+	void ConfigureCamSensor(int64 usage);
 
 	/// <summary>
 	/// Usage of tee for current shot and set tee height
 	/// usage : 0->No Use, 1->Use
 	/// height : tee height. Unit : 1/1000m
 	/// </summary>
-	void Set_Tee(I64 usage, float height);
+	void Set_Tee(int64 usage, float height);
 
 	/// <summary>
 	/// Set Club
 	/// clubcode : DRIVER->1, IRON7->17, PUTTER->30
 	/// </summary>
-	void Set_Club(I64 clubcode);
+	void Set_Club(int64 clubcode);
 
 	/// <summary>
 	/// Set Wind information
@@ -284,12 +305,12 @@ public:
 	/// Set Main Hand
 	/// hand : 1 is LEFT handed, 0 is RIGHT handed
 	/// </summary>
-	void  Set_MainHand(I64 _hand);
+	void  Set_MainHand(int64 _hand);
 
 	/// <summary>
 	/// Set Tee State?
 	/// </summary>
-	void SetTeeState(I64 p0, I64 p1);
+	void SetTeeState(int64 param1, int64 param2);
 
 	/// <summary>
 	/// Get current operation status of Sensor
@@ -298,19 +319,30 @@ public:
 	/// <returns>
 	/// status value of Sensor operation
 	/// </returns>
-	int GetSensorState();
+	int32 GetSensorState();
 
 	/// <summary>
 	/// Set allow Area to Sensor. tee area, ground area, putting area
 	/// whole three area : 0 -> Not allow, 1 -> Allow
 	/// </summary>
-	void AllowArea(I64 tee, I64 ground, I64 putting);
+	void AllowArea(int64 tee, int64 ground, int64 putting);
 
 	/// <summary>
 	/// Check ball position and existing in area
 	/// exist check tee, ground, putting area, also check detail position on x, y, z property
 	/// </summary>
-	void CheckBallPosition();
+	static void CheckBallPosition();
 
-	void PrintResult(int title, int result, bool showLog = true);
+	static void PrintResult(int32 title, int32 result, bool showLog = true);
+
+// public:
+// #if defined (_WIN64)
+// 	int64 p0;
+// 	int64 p1;
+// 	int64 p2;
+// #else
+// 	int32 p0;
+// 	int32 p1;
+// 	int32 p2;
+// #endif
 };

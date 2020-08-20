@@ -1,16 +1,24 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "z3camHandler.h"
 #include "z3camSDK.h"
 #include "ProjectJK/ProjectJK.h"
 
 
-int Uz3camHandler::CR2_CALLBACKFUNC(HAND h, U32 status, FCR2_shotdata *psd, I32 userparam)
+#if defined(_WIN64)
+int Uz3camHandler::CR2_CALLBACKFUNC(void* h, uint32 status, FCR2_shotdata *psd, int64 userparam)
+#else
+int Uz3camHandler::CR2_CALLBACKFUNC(void* h, uint32 status, FCR2_shotdata *psd, int32 userparam)
+#endif
 {
 	return 0;
 }
 
-int Uz3camHandler::CR2_CALLBACKFUNC1(HAND h, U32 status, HAND hsd, U32 cbfuncid, I64 userparam)
+#if defined(_WIN64)
+int Uz3camHandler::CR2_CALLBACKFUNC1(void* h, uint32 status, void* hsd, uint32 cbfuncid, int64 userparam)
+#else
+int Uz3camHandler::CR2_CALLBACKFUNC1(void* h, uint32 status, void* hsd, uint32 cbfuncid, int32 userparam)
+#endif
 {
 	UE_LOG(LogSensor, Log, TEXT("[CALLBACK] func1 \n"));
 	UE_LOG(LogSensor, Log, TEXT("hand : %p"), h);
@@ -106,9 +114,8 @@ int Uz3camHandler::CR2_CALLBACKFUNC1(HAND h, U32 status, HAND hsd, U32 cbfuncid,
 		}
 	}
 
-
 // 	if (h != NULL) {				// Yes.. restart shot.
-// 		U32 cmd;
+// 		uint32 cmd;
 // 		CR2_result_t res;
 // 
 // 		cmd = CR2CMD_OPERATION_RESTART;
@@ -118,20 +125,58 @@ int Uz3camHandler::CR2_CALLBACKFUNC1(HAND h, U32 status, HAND hsd, U32 cbfuncid,
 	return CR2_OK;
 }
 
+void Uz3camHandler::InitSensor()
+{
+	int cmd = CR2SENSORBOARD_N1P2;
+
+#if defined(_WIN64)
+	hand.h = Uz3camSDK::CR2_init(cmd, 0, (int64)&hand.ccode[0], IANA_OPMODE_DEFAULT, 0, 0);
+#else
+	hand.h = Uz3camSDK::CR2_init(cmd, 0, (int32)&hand.ccode[0], IANA_OPMODE_CAM, 0, 0);
+#endif
+}
+
+void Uz3camHandler::StartSensor()
+{
+
+	int cmd, res;
+
+#if defined(_WIN64)
+	int64 userparam;
+
+	userparam = 1234;			// Whatever..
+	//p0 = reinterpret_cast<int64>(&Uz3camHandler::CR2_CALLBACKFUNC1);
+	int64 p0 = (int64)(&CR2_CALLBACKFUNC1);
+	int64 p1 = (int64)1;
+	int64 p2 = (int64)userparam;
+
+#else
+	int32 userparam;
+
+	userparam = 1234;			// Whatever..
+	p0 = (int32)(&CR2_CALLBACKFUNC1);
+	p1 = (int32)1;
+	p2 = (int32)userparam;
+#endif
+
+	cmd = CR2CMD_OPERATION_START1;
+	res = Uz3camSDK::CR2_command(hand.h, cmd, p0, p1, p2, 0);
+}
+
 FString Uz3camHandler::GetVersion()
 {
 // 	if (!hand)
 // 		Init();
 
-	I64 p0 = 0; //major
-	I64 p1 = 0; //minor
-	I64 p2 = 0; //buildnum
+	int64 p0 = 0; //major
+	int64 p1 = 0; //minor
+	int64 p2 = 0; //buildnum
 
 	int cmd = CR2CMD_DLLVERSION;
-	hand = (HAND)z3camSDK::CR2_init(CR2SENSORBOARD_N1P2, cmd, p0, p1, p2, 0);
+	hand.h = Uz3camSDK::CR2_init(CR2SENSORBOARD_N1P2, cmd, p0, p1, p2, 0);
 
 	FString version;
-	if (hand)
+	if (hand.h)
 		version = FString::FromInt(p0) + "_" + FString::FromInt(p1) + "_" + FString::FromInt(p2);
 	else
 		version = "0_0_0";
@@ -139,24 +184,24 @@ FString Uz3camHandler::GetVersion()
 	return version;
 }
 
-void Uz3camHandler::SetHeightIncline(I64 height, I64 vangleadd)
+void Uz3camHandler::SetHeightIncline(int64 height, int64 vangleadd)
 {
 	int cmd = CR2CMD_SENSORCONFIG;
-	int res = z3camSDK::CR2_command(hand, cmd, height, vangleadd, 0, 0);
+	int res = Uz3camSDK::CR2_command(hand.h, cmd, height, vangleadd, 0, 0);
 	PrintResult(cmd, res);
 }
 
-void Uz3camHandler::ConfigureCamSensor(I64 usage)
+void Uz3camHandler::ConfigureCamSensor(int64 usage)
 {
 	int cmd = CR2CMD_CAMSENSORCONFIG;
-	int res = z3camSDK::CR2_command(hand, cmd, usage, 0, 0, 0);
+	int res = Uz3camSDK::CR2_command(hand.h, cmd, usage, 0, 0, 0);
 	PrintResult(cmd, res);
 }
 
-void Uz3camHandler::Set_Tee(I64 usage, float height)
+void Uz3camHandler::Set_Tee(int64 usage, float height)
 {
 	int cmd = CR2CMD_USETEE;
-	int res = z3camSDK::CR2_command(hand, cmd, usage, (I64)height, 0, 0);
+	int res = Uz3camSDK::CR2_command(hand.h, cmd, usage, (int64)height, 0, 0);
 	PrintResult(cmd, res);
 	if (res == CR2_OK)
 	{
@@ -165,10 +210,10 @@ void Uz3camHandler::Set_Tee(I64 usage, float height)
 	}
 }
 
-void Uz3camHandler::Set_Club(I64 clubcode)
+void Uz3camHandler::Set_Club(int64 clubcode)
 {
 	int cmd = CR2CMD_USECLUB;
-	int res = z3camSDK::CR2_command(hand, cmd, clubcode, 0, 0, 0);
+	int res = Uz3camSDK::CR2_command(hand.h, cmd, clubcode, 0, 0, 0);
 	PrintResult(cmd, res);
 	if (res == CR2_OK)
 		UE_LOG(LogSensor, Log, TEXT("Club code : %s"), clubcode);
@@ -177,66 +222,61 @@ void Uz3camHandler::Set_Club(I64 clubcode)
 void Uz3camHandler::Set_Wind(float mag, float dir)
 {
 	int cmd = CR2CMD_WIND;
-	int res = z3camSDK::CR2_command(hand, cmd, (I64)mag, (I64)dir, 0, 0);
+	int res = Uz3camSDK::CR2_command(hand.h, cmd, (int64)mag, (int64)dir, 0, 0);
 	PrintResult(cmd, res);
 	if (res == CR2_OK)
 		UE_LOG(LogSensor, Log, TEXT("Wind mag : %s, Wind dir : %s"), mag, dir);
 }
 
-void Uz3camHandler::Set_MainHand(I64 _hand)
+void Uz3camHandler::Set_MainHand(int64 _hand)
 {
 	int cmd = CR2CMD_SETRIGHTLEFT;
-	int res = z3camSDK::CR2_command(hand, cmd, _hand, 0, 0, 0);
+	int res = Uz3camSDK::CR2_command(hand.h, cmd, _hand, 0, 0, 0);
 	PrintResult(cmd, res);
 }
 
-void Uz3camHandler::SetTeeState(I64 p0, I64 p1)
+void Uz3camHandler::SetTeeState(int64 param1, int64 param2)
 {
 	int cmd = CR2CMD_SETTEESTATE;
-	int res = z3camSDK::CR2_command(hand, cmd, p0, p1, 0, 0);
+	int res = Uz3camSDK::CR2_command(hand.h, cmd, param1, param2, 0, 0);
 	PrintResult(cmd, res);
 }
 
 int Uz3camHandler::GetSensorState()
 {
 	int sensor_status = 0;
-	I64 p0 = (I64)&sensor_status;
+	int64 p0 = (int64)&sensor_status;
 	int cmd = CR2CMD_SENSORSTATUS;
-	int res = z3camSDK::CR2_command(hand, cmd, p0, 0, 0, 0);
+	int res = Uz3camSDK::CR2_command(hand.h, cmd, p0, 0, 0, 0);
 	PrintResult(cmd, res);
 
 	return sensor_status;
 }
 
-void Uz3camHandler::AllowArea(I64 tee, I64 ground, I64 putting)
+void Uz3camHandler::AllowArea(int64 tee, int64 ground, int64 putting)
 {
 	int cmd = CR2CMD_AREAALLOW;
-	int res = z3camSDK::CR2_command(hand, cmd, tee, ground, putting, 0);
+	int res = Uz3camSDK::CR2_command(hand.h, cmd, tee, ground, putting, 0);
 	PrintResult(cmd, res);
 }
 
 void Uz3camHandler::CheckBallPosition()
 {
-#if defined(_WIN64)
-	I64 p0, p1, p2;
-#else
-	I32 p0, p1, p2;
-#endif
 	FCR2_ballposition  TeeBallPos;
 	FCR2_ballposition  IronBallPos;
 	FCR2_ballposition  PuttingBallPos;
 
 #if defined(_WIN64)                         // For 64bit SDK
-	p0 = (I64)& TeeBallPos;
-	p1 = (I64)& IronBallPos;
-	p2 = (I64)& PuttingBallPos;
+	int64 p0 = (int64)& TeeBallPos;
+	int64 p1 = (int64)& IronBallPos;
+	int64 p2 = (int64)& PuttingBallPos;
 #else
-	p0 = (I32)& TeeBallPos;
-	p1 = (I32)& IronBallPos;
-	p2 = (I32)& PuttingBallPos;
+	int32 p0 = (int32)& TeeBallPos;
+	int32 p1 = (int32)& IronBallPos;
+	int32 p2 = (int32)& PuttingBallPos;
 #endif
 	int cmd = CR2CMD_BALLPOSITION;
-	int res = z3camSDK::CR2_command(hand, cmd, p0, p1, p2, 0);
+	int res = Uz3camSDK::CR2_command(hand.h, cmd, p0, p1, p2, 0);
 	PrintResult(cmd, res);
 	
 	if (res == CR2_OK) {
@@ -255,7 +295,7 @@ void Uz3camHandler::CheckBallPosition()
 	}
 }
 
-void Uz3camHandler::PrintResult(int title, int result, bool showLog)
+void Uz3camHandler::PrintResult(int32 title, int32 result, bool showLog)
 {
 	if (showLog)
 		UE_LOG(LogSensor, Log, TEXT("%s : %s"), GET_VARIABLE_NAME(title), GET_VARIABLE_NAME(result));

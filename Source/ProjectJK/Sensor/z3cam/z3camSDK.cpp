@@ -1,19 +1,67 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "z3camSDK.h"
+#include "ProjectJK/ProjectJK.h"
 
-z3camSDK::z3camSDK()
+Uz3camSDK::Uz3camSDK()
+{
+	bool success = false;
+#if (_WIN64)
+	success = importDLL("", "z3camAdapt64.dll");
+#else
+	success = importDLL("", "z3camAdapt.dll");
+#endif
+
+	if (success)
+	{
+		UE_LOG(LogSensor, Log, TEXT("Import DLL success"));
+		if (import_initMethod())
+		{
+			UE_LOG(LogSensor, Log, TEXT("Import init method success"));
+			if (import_deleteMethod())
+			{
+				UE_LOG(LogSensor, Log, TEXT("Import delete method success"));
+				if (import_commandMethod())
+				{
+					UE_LOG(LogSensor, Log, TEXT("Import command method success"));
+				}
+				else
+				{
+					UE_LOG(LogSensor, Log, TEXT("Import command method failed"));
+				}
+			}
+			else
+			{
+				UE_LOG(LogSensor, Log, TEXT("Import init method failed"));
+			}
+		}
+		else
+		{
+			UE_LOG(LogSensor, Log, TEXT("Import delete method failed"));
+		}
+	}
+	else
+		UE_LOG(LogSensor, Log, TEXT("Import DLL failed"));
+
+}
+
+Uz3camSDK::~Uz3camSDK()
 {
 }
 
-z3camSDK::~z3camSDK()
-{
-}
+#if defined(_WIN64)
+typedef void*(*_get_cr2_init)(uint32 sensorcode, uint32 sensornum, int64 p0, int64 p1, int64 p2, int64 p3);
+#else
+typedef void*(*_get_cr2_init)(uint32 sensorcode, uint32 sensornum, int32 p0, int32 p1, int32 p2, int32 p3);
+#endif
 
-typedef void*(*_get_cr2_init)(int sensorcode, int sensornum, long long p0, long long p1, long long p2, long long p3);
 typedef int(*_get_cr2_delete)(void* hand);
-typedef int(*_get_cr2_command)(void* h, unsigned int cmd, long long p0, long long p1, long long p2, long long p3);
+
+#if defined(_WIN64)
+typedef int(*_get_cr2_command)(void* h, uint32 cmd, int64 p0, int64 p1, int64 p2, int64 p3);
+#else
+typedef int(*_get_cr2_command)(void* h, uint32 cmd, int32 p0, int32 p1, int32 p2, int32 p3);
+#endif
 
 _get_cr2_init m_cr2_init;
 _get_cr2_delete m_cr2_delete;
@@ -23,7 +71,7 @@ void *v_dllHandle;
 
 #pragma region Load DLL
 // Method to import a DLL.
-bool z3camSDK::importDLL(FString folder, FString name)
+bool Uz3camSDK::importDLL(FString folder, FString name)
 {
 	FString filePath = *FPaths::EnginePluginsDir() + folder + "/" + name;
 
@@ -40,7 +88,7 @@ bool z3camSDK::importDLL(FString folder, FString name)
 #pragma endregion Load DLL
 
 #pragma region Unload DLL
-void z3camSDK::freeDLL()
+void Uz3camSDK::freeDLL()
 {
 	if (v_dllHandle != NULL)
 	{
@@ -51,7 +99,7 @@ void z3camSDK::freeDLL()
 #pragma  endregion UnloadDLL
 
 
-bool z3camSDK::import_initMethod()
+bool Uz3camSDK::import_initMethod()
 {
 	if (v_dllHandle != NULL)
 	{
@@ -64,8 +112,11 @@ bool z3camSDK::import_initMethod()
 	}
 	return false;    // Return an error.
 }
-
-void* z3camSDK::CR2_init(int sensorcode, int sensornum, long long p0, long long p1, long long p2, long long p3)
+#if defined(_WIN64)
+void* Uz3camSDK::CR2_init(uint32 sensorcode, uint32 sensornum, int64 p0, int64 p1, int64 p2, int64 p3)
+#else
+void* Uz3camSDK::CR2_init(uint32 sensorcode, uint32 sensornum, int32 p0, int32 p1, int32 p2, int32 p3)
+#endif
 {
 	if (m_cr2_init != NULL)
 		return m_cr2_init(sensorcode, sensornum, p0, p1, p2, p3);
@@ -73,7 +124,7 @@ void* z3camSDK::CR2_init(int sensorcode, int sensornum, long long p0, long long 
 		return nullptr;
 }
 
-bool z3camSDK::import_deleteMethod()
+bool Uz3camSDK::import_deleteMethod()
 {
 	if (v_dllHandle != NULL)
 	{
@@ -87,7 +138,7 @@ bool z3camSDK::import_deleteMethod()
 	return false;    // Return an error.
 }
 
-int z3camSDK::CR2_delete(void* hand)
+int Uz3camSDK::CR2_delete(void* hand)
 {
 	if (m_cr2_delete != NULL)
 		return m_cr2_delete(hand);
@@ -95,7 +146,7 @@ int z3camSDK::CR2_delete(void* hand)
 		return -1;
 }
 
-bool z3camSDK::import_commandMethod()
+bool Uz3camSDK::import_commandMethod()
 {
 	if (v_dllHandle != NULL)
 	{
@@ -109,7 +160,11 @@ bool z3camSDK::import_commandMethod()
 	return false;    // Return an error.
 }
 
-int z3camSDK::CR2_command(void* h, unsigned int cmd, long long p0, long long p1, long long p2, long long p3)
+#if defined(_WIN64)
+int Uz3camSDK::CR2_command(void* h, uint32 cmd, int64 p0, int64 p1, int64 p2, int64 p3)
+#else
+int Uz3camSDK::CR2_command(void* h, uint32 cmd, int32 p0, int32 p1, int32 p2, int32 p3)
+#endif
 {
 	if (m_cr2_command != NULL)
 		return m_cr2_command(h, cmd, p0, p1, p2, p3);
