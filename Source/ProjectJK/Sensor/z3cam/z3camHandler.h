@@ -230,6 +230,8 @@
 
 #define GET_VARIABLE_NAME(Variable) (#Variable)
 
+#define CLIENT_CODE_LENGTH 16
+
 USTRUCT(BlueprintType)
 struct FHAND {
 
@@ -246,6 +248,9 @@ UCLASS()
 class PROJECTJK_API Uz3camHandler : public UObject
 {
 	GENERATED_BODY()
+		
+	Uz3camHandler();
+	~Uz3camHandler();
 
 public:
 #if defined(_WIN64)
@@ -255,14 +260,16 @@ public:
 #endif
 
 #if defined(_WIN64)
-	static int32 (WINAPI CR2_CALLBACKFUNC1)(void* h, uint32 status, void* hsd, uint32 cbfuncid, int64 userparam);
+	int32 (WINAPI CR2_CALLBACKFUNC1)(void* h, uint32 status, void* hsd, uint32 cbfuncid, int64 userparam);
 #else
 	int32 (WINAPI CR2_CALLBACKFUNC1)(void* h, uint32 status, void* hsd, uint32 cbfuncid, int32 userparam);
 #endif
-
-	void InitSensor();
-
-	void StartSensor();
+	void Initialize();
+	bool Init();
+	void Start();
+	void Restart();
+	bool Stop();
+	void Shutdown();
 	/// <summary>
 	/// Get version of CR2 Interface API dll
 	/// </summary>
@@ -305,7 +312,7 @@ public:
 	/// Set Main Hand
 	/// hand : 1 is LEFT handed, 0 is RIGHT handed
 	/// </summary>
-	void  Set_MainHand(int64 _hand);
+	void Set_MainHand(int64 _hand);
 
 	/// <summary>
 	/// Set Tee State?
@@ -331,9 +338,11 @@ public:
 	/// Check ball position and existing in area
 	/// exist check tee, ground, putting area, also check detail position on x, y, z property
 	/// </summary>
-	static void CheckBallPosition();
+	void CheckBallPosition();
 
-	static void PrintResult(int32 title, int32 result, bool showLog = true);
+	void PrintResult(int32 title, int32 result, bool showLog = true);
+
+	//FString GetResultString(int result)
 
 // public:
 // #if defined (_WIN64)

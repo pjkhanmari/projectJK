@@ -5,5 +5,6 @@
 
 IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, ProjectJK, "ProjectJK" );
 
-//Sensor Log
 DEFINE_LOG_CATEGORY(LogSensor);
+
+DEFINE_LOG_CATEGORY(LogGamePlay);

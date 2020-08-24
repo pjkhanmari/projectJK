@@ -5,6 +5,16 @@
 #include "ProjectJK/ProjectJK.h"
 
 
+Uz3camHandler::Uz3camHandler()
+{
+	Initialize();
+}
+
+Uz3camHandler::~Uz3camHandler()
+{
+
+}
+
 #if defined(_WIN64)
 int Uz3camHandler::CR2_CALLBACKFUNC(void* h, uint32 status, FCR2_shotdata *psd, int64 userparam)
 #else
@@ -15,9 +25,9 @@ int Uz3camHandler::CR2_CALLBACKFUNC(void* h, uint32 status, FCR2_shotdata *psd, 
 }
 
 #if defined(_WIN64)
-int Uz3camHandler::CR2_CALLBACKFUNC1(void* h, uint32 status, void* hsd, uint32 cbfuncid, int64 userparam)
+int32 Uz3camHandler::CR2_CALLBACKFUNC1(void* h, uint32 status, void* hsd, uint32 cbfuncid, int64 userparam)
 #else
-int Uz3camHandler::CR2_CALLBACKFUNC1(void* h, uint32 status, void* hsd, uint32 cbfuncid, int32 userparam)
+int32 Uz3camHandler::CR2_CALLBACKFUNC1(void* h, uint32 status, void* hsd, uint32 cbfuncid, int32 userparam)
 #endif
 {
 	UE_LOG(LogSensor, Log, TEXT("[CALLBACK] func1 \n"));
@@ -125,33 +135,81 @@ int Uz3camHandler::CR2_CALLBACKFUNC1(void* h, uint32 status, void* hsd, uint32 c
 	return CR2_OK;
 }
 
-void Uz3camHandler::InitSensor()
+void Uz3camHandler::Initialize()
+{
+	bool success = false;
+#if (_WIN64)
+	success = Uz3camSDK::importDLL("z3cam", "z3camAdapt64.dll");
+#else
+	success = Uz3camSDK::importDLL("z3cam", "z3camAdapt.dll");
+#endif
+
+	if (success)
+	{
+		UE_LOG(LogSensor, Log, TEXT("Import DLL success"));
+		if (Uz3camSDK::import_initMethod())
+		{
+			UE_LOG(LogSensor, Log, TEXT("Import init method success"));
+		}
+		else
+		{
+			UE_LOG(LogSensor, Log, TEXT("Import delete method failed"));
+		}
+		if (Uz3camSDK::import_deleteMethod())
+		{
+			UE_LOG(LogSensor, Log, TEXT("Import delete method success"));
+		}
+		else
+		{
+			UE_LOG(LogSensor, Log, TEXT("Import init method failed"));
+		}
+		if (Uz3camSDK::import_commandMethod())
+		{
+			UE_LOG(LogSensor, Log, TEXT("Import command method success"));
+		}
+		else
+		{
+			UE_LOG(LogSensor, Log, TEXT("Import command method failed"));
+		}
+	}
+	else
+		UE_LOG(LogSensor, Log, TEXT("Import DLL failed"));
+}
+
+bool Uz3camHandler::Init()
 {
 	int cmd = CR2SENSORBOARD_N1P2;
+
+	hand.ccode.Reset(CLIENT_CODE_LENGTH);
+	for (int i = 0; i < CLIENT_CODE_LENGTH; i++)
+		hand.ccode.Emplace(0);
 
 #if defined(_WIN64)
 	hand.h = Uz3camSDK::CR2_init(cmd, 0, (int64)&hand.ccode[0], IANA_OPMODE_DEFAULT, 0, 0);
 #else
 	hand.h = Uz3camSDK::CR2_init(cmd, 0, (int32)&hand.ccode[0], IANA_OPMODE_CAM, 0, 0);
 #endif
+
+	bool result = hand.h ? true : false;
+	return result;
 }
 
-void Uz3camHandler::StartSensor()
+void Uz3camHandler::Start()
 {
-
+	std::function<int32(Uz3camHandler&, void* h, uint32 status, void* hsd, uint32 cbfuncid, int64 userparam)> cb = &Uz3camHandler::CR2_CALLBACKFUNC1;
 	int cmd, res;
 
 #if defined(_WIN64)
 	int64 userparam;
 
 	userparam = 1234;			// Whatever..
-	//p0 = reinterpret_cast<int64>(&Uz3camHandler::CR2_CALLBACKFUNC1);
-	int64 p0 = (int64)(&CR2_CALLBACKFUNC1);
+	//int64 p0 = reinterpret_cast<int64>(cb);
+	int64 p0 = (int64)&cb;
 	int64 p1 = (int64)1;
 	int64 p2 = (int64)userparam;
 
 #else
-	int32 userparam;
+	int32 userparam; 
 
 	userparam = 1234;			// Whatever..
 	p0 = (int32)(&CR2_CALLBACKFUNC1);
@@ -161,6 +219,38 @@ void Uz3camHandler::StartSensor()
 
 	cmd = CR2CMD_OPERATION_START1;
 	res = Uz3camSDK::CR2_command(hand.h, cmd, p0, p1, p2, 0);
+	PrintResult(cmd, res);
+}
+
+void Uz3camHandler::Restart()
+{
+	int cmd = CR2CMD_OPERATION_RESTART;
+	int res = Uz3camSDK::CR2_command(hand.h, cmd, 0, 0, 0, 0);
+	PrintResult(cmd, res);
+}
+
+bool Uz3camHandler::Stop()
+{
+	int cmd = CR2CMD_OPERATION_STOP;
+	int res = Uz3camSDK::CR2_command(hand.h, cmd, 0, 0, 0, 0);
+
+	PrintResult(cmd, res);
+
+	bool result = res == CR2_OK ? true : false;
+	return result;
+}
+
+void Uz3camHandler::Shutdown()
+{
+	int res = Uz3camSDK::CR2_delete(hand.h);
+	if (res == CR2_OK)
+	{
+		UE_LOG(LogSensor, Log, TEXT("CR2_delete is success"));
+	}
+	else
+	{
+		UE_LOG(LogSensor, Log, TEXT("CR2_delete is failed"));
+	}
 }
 
 FString Uz3camHandler::GetVersion()
@@ -298,7 +388,31 @@ void Uz3camHandler::CheckBallPosition()
 void Uz3camHandler::PrintResult(int32 title, int32 result, bool showLog)
 {
 	if (showLog)
-		UE_LOG(LogSensor, Log, TEXT("%s : %s"), GET_VARIABLE_NAME(title), GET_VARIABLE_NAME(result));
+	{
+		switch (title)
+		{
+		case CR2CMD_OPERATION_START1:
+		{
+			switch (result)
+			{
+			case CR2_OK:
+				UE_LOG(LogSensor, Log, TEXT("CR2_OK"));
+			default:
+				UE_LOG(LogSensor, Log, TEXT("?? : ??"));
+			}
+			break;
+		}
+		default:
+			UE_LOG(LogSensor, Log, TEXT("??"));
+		}
+
+	}
+		//UE_LOG(LogSensor, Log, TEXT("%s : %s"), GET_VARIABLE_NAME(title), GET_VARIABLE_NAME(result));
 }
+// 
+// FString Uz3camHandler::GetResultString(int result)
+// {
+// 	
+// }
 
 

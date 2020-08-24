@@ -5,44 +5,6 @@
 
 Uz3camSDK::Uz3camSDK()
 {
-	bool success = false;
-#if (_WIN64)
-	success = importDLL("", "z3camAdapt64.dll");
-#else
-	success = importDLL("", "z3camAdapt.dll");
-#endif
-
-	if (success)
-	{
-		UE_LOG(LogSensor, Log, TEXT("Import DLL success"));
-		if (import_initMethod())
-		{
-			UE_LOG(LogSensor, Log, TEXT("Import init method success"));
-			if (import_deleteMethod())
-			{
-				UE_LOG(LogSensor, Log, TEXT("Import delete method success"));
-				if (import_commandMethod())
-				{
-					UE_LOG(LogSensor, Log, TEXT("Import command method success"));
-				}
-				else
-				{
-					UE_LOG(LogSensor, Log, TEXT("Import command method failed"));
-				}
-			}
-			else
-			{
-				UE_LOG(LogSensor, Log, TEXT("Import init method failed"));
-			}
-		}
-		else
-		{
-			UE_LOG(LogSensor, Log, TEXT("Import delete method failed"));
-		}
-	}
-	else
-		UE_LOG(LogSensor, Log, TEXT("Import DLL failed"));
-
 }
 
 Uz3camSDK::~Uz3camSDK()
@@ -73,7 +35,7 @@ void *v_dllHandle;
 // Method to import a DLL.
 bool Uz3camSDK::importDLL(FString folder, FString name)
 {
-	FString filePath = *FPaths::EnginePluginsDir() + folder + "/" + name;
+	FString filePath = *FPaths::ProjectPluginsDir() + folder + "/" + name;
 
 	if (FPaths::FileExists(filePath))
 	{

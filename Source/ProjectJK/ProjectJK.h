@@ -4,5 +4,15 @@
 
 #include "CoreMinimal.h"
 
+extern PROJECTJK_API class UJKGameInstance* Insatnce;
+
+#if WITH_EDITOR
+#define GAMEINSTANCE(p) (UJKGameInstance::GetJKGameInstance(p))
+#else
+#define GAMEINSTANCE(p) Instance
+#endif
+
 //Sensor Log
 DECLARE_LOG_CATEGORY_EXTERN(LogSensor, Log, All);
+//Log during game startup
+DECLARE_LOG_CATEGORY_EXTERN(LogGamePlay, Log, All);
