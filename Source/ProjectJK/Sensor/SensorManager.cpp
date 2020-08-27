@@ -28,14 +28,18 @@ void USensorManager::RestartSensor()
 		handler->Restart();
 }
 
+void USensorManager::StopSensor()
+{
+	if (isSensorConnected)
+		handler->Stop();
+}
+
 void USensorManager::ShutdownSensor()
 {
 	if (isSensorConnected)
 	{
 		if (handler->Stop())
-		{
 			handler->Shutdown();
-		}
 	}
 }
 
@@ -62,4 +66,10 @@ ESensorState USensorManager::CheckSensorState()
 	default:
 		return ESensorState::E_STATUSERR;
 	}
+}
+
+void USensorManager::SetProperty(int32 )
+{
+	handler->Set_Tee();
+
 }

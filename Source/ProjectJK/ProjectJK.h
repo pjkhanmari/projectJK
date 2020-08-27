@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ProjectJK/JKGameInstance.h"
 
 extern PROJECTJK_API class UJKGameInstance* Insatnce;
 

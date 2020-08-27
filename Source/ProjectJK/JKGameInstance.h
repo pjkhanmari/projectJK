@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "ProjectJK/Sensor/SensorManager.h"
+#include "ProjectJK/Global/TableManager.h"
+#include "ProjectJK/Global/WidgetManager.h"
 #include "JKGameInstance.generated.h"
 
 /**
@@ -23,4 +26,6 @@ public:
 
 public:
 	UPROPERTY() class USensorManager* SensorManager = nullptr;
+	UPROPERTY() class UTableManager* TableManager = nullptr;
+	UPROPERTY() class UWidgetManager* WidgetManager = nullptr;
 };

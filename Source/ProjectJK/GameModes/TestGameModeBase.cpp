@@ -5,11 +5,13 @@
 #include "ProjectJK/JKGameInstance.h"
 #include "ProjectJK/ProjectJK.h"
 #include "ProjectJK/Sensor/SensorManager.h"
+#include "ProjectJK/Global/WidgetManager.h"
 
 void ATestGameModeBase::BeginPlay()
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
-	instance->SensorManager->StartSensor();
+	//instance->WidgetManager->ShowUserWidget(EUIPage::UIPage_TestUI);
+	//instance->SensorManager->StartSensor();
 }
 
 void ATestGameModeBase::EndPlay(const EEndPlayReason::Type reason)

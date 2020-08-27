@@ -124,14 +124,6 @@ int32 Uz3camHandler::CR2_CALLBACKFUNC1(void* h, uint32 status, void* hsd, uint32
 		}
 	}
 
-// 	if (h != NULL) {				// Yes.. restart shot.
-// 		uint32 cmd;
-// 		CR2_result_t res;
-// 
-// 		cmd = CR2CMD_OPERATION_RESTART;
-// 		res = CR2_command(h, cmd, 0, 0, 0, 0);
-// 	}
-
 	return CR2_OK;
 }
 

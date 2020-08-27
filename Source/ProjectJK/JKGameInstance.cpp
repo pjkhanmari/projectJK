@@ -2,7 +2,6 @@
 
 #include "JKGameInstance.h"
 #include "ProjectJK.h"
-#include "ProjectJK/Sensor/SensorManager.h"
 
 PROJECTJK_API UJKGameInstance* Instance = nullptr;
 
@@ -43,7 +42,10 @@ void UJKGameInstance::Init()
 {
 	SensorManager = NewObject<USensorManager>((UObject*)GetTransientPackage(), USensorManager::StaticClass());
 	SensorManager->Initialize();
-	SensorManager->InitSensor();
+	TableManager = NewObject<UTableManager>((UObject*)GetTransientPackage(), UTableManager::StaticClass());
+	TableManager->Initialize();
+	WidgetManager= NewObject<UWidgetManager>((UObject*)GetTransientPackage(), UWidgetManager::StaticClass());
+	WidgetManager->Initialize();
 }
 
 void UJKGameInstance::Shutdown()

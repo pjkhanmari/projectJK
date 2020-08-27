@@ -35,11 +35,22 @@ public:
 	void InitSensor();
 	void StartSensor();
 	void RestartSensor();
+	void StopSensor();
 	void ShutdownSensor();
 	ESensorState CheckSensorState();
+	void SetProperty();
+
+public:
+	UPROPERTY()
+	int32 CurrentClub;
+	UPROPERTY()
+	int32 CurrentHand;
+	
 
 private:
-	UPROPERTY() class Uz3camHandler* handler = nullptr;
-	UPROPERTY() bool isSensorConnected = false;
+	UPROPERTY() 
+	class Uz3camHandler* handler = nullptr;
+	UPROPERTY() 
+	bool isSensorConnected = false;
 	
 };
