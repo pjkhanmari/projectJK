@@ -68,8 +68,50 @@ ESensorState USensorManager::CheckSensorState()
 	}
 }
 
-void USensorManager::SetProperty(int32 )
+void USensorManager::SetProperty()
 {
-	handler->Set_Tee();
+	int32 useTee = 0; 
+	float teeHeight = 0;
 
+	if (club == CR2CLUB_DRIVER)
+	{
+		useTee = 1;
+		teeHeight = 0.055;
+	}
+	//tee set
+	handler->Set_Tee(useTee, teeHeight);
+	//club set
+	handler->Set_Club(club);
+	//wind set
+	handler->Set_Wind(windMag, windDir);
+	//checking area set
+	switch (club)
+	{
+	case CR2CLUB_DRIVER:
+		handler->AllowArea(1, 0, 0);
+		break;
+	case CR2CLUB_IRON1:
+		handler->AllowArea(1, 1, 0);
+		break;
+	case CR2CLUB_PUTTER:
+		handler->AllowArea(0, 0, 1);
+		break;
+	default:
+		break;
+	}
+	//main hand set
+	handler->Set_MainHand(hand);
+	//altitude set
+	handler->Set_Altitude(altitude);
+	//calculate option set
+	handler->Set_ClubdataCalOption(calculateClubOption);
 }
+
+void USensorManager::StartProcess()
+{
+	InitSensor();
+	StartSensor();
+	SetProperty();
+	RestartSensor();
+}
+

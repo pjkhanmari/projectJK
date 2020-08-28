@@ -9,9 +9,24 @@ void UWidgetManager::Initialize()
 {
 	UP_map.Reset();
 	UP_order.Empty();
+	zOrderAuto = 0;
 }
 
-void UWidgetManager::ShowUserWidget(EUIPage eUP, int32 zOrder)
+void UWidgetManager::ShowUserWidgetCreateAuto(EUIPage eUP)
+{
+	UUserWidget* widget = GetUserWidget(eUP);
+	if (!IsValid(widget))
+		widget = CreateUserWidget(eUP);
+
+	if (!widget->IsInViewport())
+	{
+		widget->AddToViewport(zOrderAuto);
+		widget->SetVisibility(ESlateVisibility::Visible);
+	}
+	zOrderAuto++;
+}
+
+void UWidgetManager::ShowUserWidgetCreateAutoForceOrder(EUIPage eUP, int32 zOrder)
 {
 	UUserWidget* widget = GetUserWidget(eUP);
 	if (!IsValid(widget))
@@ -77,7 +92,9 @@ void UWidgetManager::ChangeUIPage(EUIPage PageTogo)
 			}
 		}
 	}
+	zOrderAuto = 0;
 
+	instance->WidgetManager->ShowUserWidgetCreateAuto(PageTogo);
 	//instance->WidgetManager->ShowUserWidget(PageTogo);
 }
 

@@ -69,6 +69,13 @@
 #define	CR2CLUB_LADY_ADD			1000
 #define	CR2CLUB_LADY(x)				((x) + CR2CLUB_LADY_ADD)
 
+   //---------- mark option
+#define	CR2CLUBCALC_DEFAULT			0
+#define	CR2CLUBCALC_NOCALC			1
+#define	CR2CLUBCALC_CLUB_NOMARK		2
+#define	CR2CLUBCALC_CLUB_MARK1		3
+#define	CR2CLUBCALC_CLUB_MARK2		4
+
 
 //---------- Command Code
 #define	CR2CMD_NULL					0x00000000
@@ -94,6 +101,8 @@
 #define	CR2CMD_SHOTRESULTEX			0x00000034				// 	p0, 0: Don't clear result, 1: Clear result
 															//  p1: CR2_shotdata_ballEx_t
 #define	CR2CMD_CALC_TRAJECTORY		0x00000040
+#define	CR2CMD_SET_ALTITUDE			0x00000042				// p0: altitutde in m 
+#define	CR2CMD_SET_CLUBMODE			0x00000043				// p0: club mode. 0: Default. 1: NO Club CALC. 2: NO Club Marking, 3: Club Marking #1, 4: Club Marking #2
 #define	CR2CMD_CAM_RESERVE_CH		0x00000050
 #define	CR2CMD_CAM_RELEASE_CH		0x00000051
 #define	CR2CMD_CAM_CONFIG			0x00000052
@@ -315,6 +324,18 @@ public:
 	void Set_MainHand(int64 _hand);
 
 	/// <summary>
+	/// Set Altitude
+	/// altitude : default is 0, Unit : m
+	/// </summary>
+	void Set_Altitude(int64 altitude);
+
+	/// <summary>
+	/// Set Club data calculate option
+	/// option : 0 -> default, 1->no calculate, 2->no mark, 3 -> mark1, 4 -> mark2 (just use 1, 2, 3)
+	/// </summary>
+	void Set_ClubdataCalOption(int64 altitude);
+
+	/// <summary>
 	/// Set Tee State?
 	/// </summary>
 	void SetTeeState(int64 param1, int64 param2);
@@ -340,9 +361,10 @@ public:
 	/// </summary>
 	void CheckBallPosition();
 
-	void PrintResult(int32 title, int32 result, bool showLog = true);
+	void PrintResult(const FString title, int32 result);
 
-	//FString GetResultString(int result)
+public:
+	bool showLog = true;
 
 // public:
 // #if defined (_WIN64)

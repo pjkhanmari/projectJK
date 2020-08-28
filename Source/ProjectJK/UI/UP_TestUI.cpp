@@ -9,6 +9,7 @@
 void UUP_TestUI::NativeConstruct()
 {
 	Super::NativeConstruct();
+	BindUIEvent();
 }
 
 void UUP_TestUI::NativeDestruct()

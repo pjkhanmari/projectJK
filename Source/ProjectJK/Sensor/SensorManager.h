@@ -39,12 +39,24 @@ public:
 	void ShutdownSensor();
 	ESensorState CheckSensorState();
 	void SetProperty();
+	void StartProcess();
 
 public:
 	UPROPERTY()
-	int32 CurrentClub;
+	int32 club;
 	UPROPERTY()
-	int32 CurrentHand;
+	int32 hand;
+	UPROPERTY()
+	int32 altitude;
+	UPROPERTY()
+	int32 markingOption;
+	UPROPERTY()
+	float windMag;
+	UPROPERTY()
+	float windDir;
+	UPROPERTY()
+	int32 calculateClubOption;
+
 	
 
 private:

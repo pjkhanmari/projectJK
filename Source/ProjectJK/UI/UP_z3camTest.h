@@ -21,14 +21,24 @@ public:
 
 	void BindUIEvent();
 
+public:
+	UFUNCTION()
 	void OnClicked_InitSensor();
+	UFUNCTION()
 	void OnClicked_StartSensor();
+	UFUNCTION()
 	void OnClicked_StopSensor();
+	UFUNCTION()
 	void OnClicked_ShutdownSensor();
+	UFUNCTION()
 	void OnClicked_SelectDriver();
+	UFUNCTION()
 	void OnClicked_SelectIron();
+	UFUNCTION()
 	void OnClicked_SelectPutter();
+	UFUNCTION()
 	void OnClicked_SelectLeft();
+	UFUNCTION()
 	void OnClicked_SelectRight();
 
 public:

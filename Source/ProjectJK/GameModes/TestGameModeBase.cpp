@@ -10,7 +10,7 @@
 void ATestGameModeBase::BeginPlay()
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
-	//instance->WidgetManager->ShowUserWidget(EUIPage::UIPage_TestUI);
+	instance->WidgetManager->ChangeUIPage(EUIPage::UIPage_TestUI);
 	//instance->SensorManager->StartSensor();
 }
 

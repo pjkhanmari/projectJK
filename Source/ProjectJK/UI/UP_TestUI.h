@@ -20,6 +20,9 @@ public:
 	void NativeDestruct() override;
 
 	void BindUIEvent();
+
+public:
+	UFUNCTION()
 	void OnClick_Btn_Loadz3camUI();
 
 public:

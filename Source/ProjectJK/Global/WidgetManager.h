@@ -18,7 +18,8 @@ class PROJECTJK_API UWidgetManager : public UObject
 public:
 	void Initialize();
 
-	void ShowUserWidget(EUIPage eUP, int32 zOrder);
+	void ShowUserWidgetCreateAuto(EUIPage eUP);
+	void ShowUserWidgetCreateAutoForceOrder(EUIPage eUP, int32 zOrder);
 	UUserWidget* GetUserWidget(EUIPage eUP);
 	UUserWidget* CreateUserWidget(EUIPage eUP);
 	void ChangeUIPage(EUIPage PageTogo);
@@ -30,4 +31,8 @@ public:
 	TMap<EUIPage, UUserWidget*> UP_map;
 	UPROPERTY()
 	TArray<EUIPage> UP_order;
+
+private:
+	UPROPERTY()
+	int32 zOrderAuto;
 };
