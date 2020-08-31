@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "ProjectJK/JKGameInstance.h"
 
-extern PROJECTJK_API class UJKGameInstance* Insatnce;
+extern PROJECTJK_API class UJKGameInstance* Instance;
 
 #if WITH_EDITOR
 #define GAMEINSTANCE(p) (UJKGameInstance::GetJKGameInstance(p))

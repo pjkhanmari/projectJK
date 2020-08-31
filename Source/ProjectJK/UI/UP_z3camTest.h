@@ -20,8 +20,13 @@ public:
 	void NativeDestruct() override;
 
 	void BindUIEvent();
+	void SetSensorCommandResultText(FString text);
+	void SetClubText(FString text);
+	void SetHandText(FString text);
 
 public:
+	UFUNCTION()
+	void StartCheck();
 	UFUNCTION()
 	void OnClicked_InitSensor();
 	UFUNCTION()
@@ -40,8 +45,11 @@ public:
 	void OnClicked_SelectLeft();
 	UFUNCTION()
 	void OnClicked_SelectRight();
+	UFUNCTION()
+	void OnClicked_GetVersion();
 
 public:
+	//Button
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
 	UButton* BTN_InitSensor;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
@@ -60,5 +68,23 @@ public:
 	UButton* BTN_Left;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
 	UButton* BTN_Right;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UButton* BTN_GetVersion;
+	//textblock
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	URichTextBlock* RTB_SensorState;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UTextBlock* TB_SensorCheckState;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UTextBlock* TB_Club;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UTextBlock* TB_Hand;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UTextBlock* TB_Version;
+
+private:
+	UPROPERTY()
+	FTimerHandle SensorCheckTickHandler;
+	UPROPERTY()
+	FText SensorText;
 };

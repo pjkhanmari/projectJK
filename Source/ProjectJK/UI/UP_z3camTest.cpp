@@ -10,6 +10,9 @@ void UUP_z3camTest::NativeConstruct()
 {
 	Super::NativeConstruct();
 	BindUIEvent();
+	UJKGameInstance* instance = GAMEINSTANCE(this);
+	SensorText = FText::FromString(TEXT(""));
+	instance->GetWorld()->GetTimerManager().SetTimer(SensorCheckTickHandler, this, &UUP_z3camTest::StartCheck, .5f, true, 1.f);
 }
 
 void UUP_z3camTest::NativeDestruct()
@@ -26,74 +29,128 @@ void UUP_z3camTest::BindUIEvent()
 	}
 	if (IsValid(BTN_StartSensor))
 	{
-		BTN_InitSensor->OnClicked.Clear();
-		BTN_InitSensor->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_StartSensor);
+		BTN_StartSensor->OnClicked.Clear();
+		BTN_StartSensor->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_StartSensor);
 	}
 	if (IsValid(BTN_StopSensor))
 	{
-		BTN_InitSensor->OnClicked.Clear();
-		BTN_InitSensor->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_StopSensor);
+		BTN_StopSensor->OnClicked.Clear();
+		BTN_StopSensor->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_StopSensor);
 	}
 	if (IsValid(BTN_ShutdownSensor))
 	{
-		BTN_InitSensor->OnClicked.Clear();
-		BTN_InitSensor->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_ShutdownSensor);
+		BTN_ShutdownSensor->OnClicked.Clear();
+		BTN_ShutdownSensor->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_ShutdownSensor);
 	}
 	if (IsValid(BTN_Driver))
 	{
-		BTN_InitSensor->OnClicked.Clear();
-		BTN_InitSensor->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_SelectDriver);
+		BTN_Driver->OnClicked.Clear();
+		BTN_Driver->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_SelectDriver);
 	}
 	if (IsValid(BTN_Iron))
 	{
-		BTN_InitSensor->OnClicked.Clear();
-		BTN_InitSensor->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_SelectIron);
+		BTN_Iron->OnClicked.Clear();
+		BTN_Iron->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_SelectIron);
 	}
 	if (IsValid(BTN_Putter))
 	{
-		BTN_InitSensor->OnClicked.Clear();
-		BTN_InitSensor->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_SelectPutter);
+		BTN_Putter->OnClicked.Clear();
+		BTN_Putter->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_SelectPutter);
 	}
 	if (IsValid(BTN_Left))
 	{
-		BTN_InitSensor->OnClicked.Clear();
-		BTN_InitSensor->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_SelectLeft);
+		BTN_Left->OnClicked.Clear();
+		BTN_Left->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_SelectLeft);
 	}
 	if (IsValid(BTN_Right))
 	{
-		BTN_InitSensor->OnClicked.Clear();
-		BTN_InitSensor->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_SelectRight);
+		BTN_Right->OnClicked.Clear();
+		BTN_Right->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_SelectRight);
 	}
+	if (IsValid(BTN_GetVersion))
+	{
+		BTN_GetVersion->OnClicked.Clear();
+		BTN_GetVersion->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_GetVersion);
+	}
+}
+
+void UUP_z3camTest::SetSensorCommandResultText(FString text)
+{
+	TB_SensorCheckState->SetText(FText::FromString(text));
+}
+
+void UUP_z3camTest::SetClubText(FString text)
+{
+	TB_Club->SetText(FText::FromString(text));
+}
+
+void UUP_z3camTest::SetHandText(FString text)
+{
+	TB_Hand->SetText(FText::FromString(text));
+}
+
+void UUP_z3camTest::StartCheck()
+{
+	UJKGameInstance* instance = GAMEINSTANCE(this);
+	if (!instance->SensorManager->IsSensorConnected())
+		return;
+
+	switch (instance->SensorManager->CheckSensorState())
+	{
+	case ESensorState::E_NULL:
+		SensorText = FText::FromString(TEXT("NULL STATE"));
+		break;
+	case ESensorState::E_READY:
+		SensorText = FText::FromString(TEXT("READY STATE"));
+		break;
+	case ESensorState::E_DISCONNECT:
+		SensorText = FText::FromString(TEXT("DISCONNECT STATE"));
+		break;
+	case ESensorState::E_BIGSHADOW:
+		SensorText = FText::FromString(TEXT("BIG SHADOW STATE"));
+		break;
+	case ESensorState::E_NOBALL:
+		SensorText = FText::FromString(TEXT("NO BALL STATE"));
+		break;
+	case ESensorState::E_LOWACTIVE:
+		SensorText = FText::FromString(TEXT("LOW ACTIVE STATE"));
+		break;
+	default:
+		SensorText = FText::FromString(TEXT("READY STATE"));
+		break;
+	}
+	RTB_SensorState->SetText(SensorText);
 }
 
 void UUP_z3camTest::OnClicked_InitSensor()
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
-	instance->SensorManager->InitSensor();
+	SetSensorCommandResultText(instance->SensorManager->InitSensor());
 }
 
 void UUP_z3camTest::OnClicked_StartSensor()
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
-	instance->SensorManager->StartSensor();
+	SetSensorCommandResultText(instance->SensorManager->StartSensor());
 }
 
 void UUP_z3camTest::OnClicked_StopSensor()
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
-	instance->SensorManager->StopSensor();
+	SetSensorCommandResultText(instance->SensorManager->StopSensor());
 }
 
 void UUP_z3camTest::OnClicked_ShutdownSensor()
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
-	instance->SensorManager->ShutdownSensor();
+	SetSensorCommandResultText(instance->SensorManager->ShutdownSensor());
 }
 
 void UUP_z3camTest::OnClicked_SelectDriver()
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
 	instance->SensorManager->club = CR2CLUB_DRIVER;
+	SetClubText(FString(TEXT("Driver")));
 	instance->SensorManager->SetProperty();
 }
 
@@ -101,6 +158,7 @@ void UUP_z3camTest::OnClicked_SelectIron()
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
 	instance->SensorManager->club = CR2CLUB_IRON7;
+	SetClubText(FString(TEXT("Iron")));
 	instance->SensorManager->SetProperty();
 }
 
@@ -108,6 +166,7 @@ void UUP_z3camTest::OnClicked_SelectPutter()
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
 	instance->SensorManager->club = CR2CLUB_PUTTER;
+	SetClubText(FString(TEXT("Putter")));
 	instance->SensorManager->SetProperty();
 }
 
@@ -115,6 +174,7 @@ void UUP_z3camTest::OnClicked_SelectLeft()
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
 	instance->SensorManager->hand = 1;
+	SetHandText(FString(TEXT("Left")));
 	instance->SensorManager->SetProperty();
 }
 
@@ -122,5 +182,12 @@ void UUP_z3camTest::OnClicked_SelectRight()
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
 	instance->SensorManager->hand = 0;
+	SetHandText(FString(TEXT("Right")));
 	instance->SensorManager->SetProperty();
+}
+
+void UUP_z3camTest::OnClicked_GetVersion()
+{
+	UJKGameInstance* instance = GAMEINSTANCE(this);
+	TB_Version->SetText(FText::FromString(instance->SensorManager->GetVersion()));
 }

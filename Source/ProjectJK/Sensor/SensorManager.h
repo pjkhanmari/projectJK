@@ -32,14 +32,17 @@ class PROJECTJK_API USensorManager : public UObject
 public:
 	void Initialize();
 
-	void InitSensor();
-	void StartSensor();
-	void RestartSensor();
-	void StopSensor();
-	void ShutdownSensor();
+	FString InitSensor();
+	FString StartSensor();
+	FString RestartSensor();
+	FString StopSensor();
+	FString ShutdownSensor();
 	ESensorState CheckSensorState();
+	FString GetVersion();
 	void SetProperty();
 	void StartProcess();
+	bool IsSensorConnected();
+//	void StartSensorCheck();
 
 public:
 	UPROPERTY()
@@ -56,8 +59,6 @@ public:
 	float windDir;
 	UPROPERTY()
 	int32 calculateClubOption;
-
-	
 
 private:
 	UPROPERTY() 

@@ -251,8 +251,6 @@ public:
 	TArray<uint32> ccode;
 };
 
-static FHAND hand;
-
 UCLASS()
 class PROJECTJK_API Uz3camHandler : public UObject
 {
@@ -275,10 +273,10 @@ public:
 #endif
 	void Initialize();
 	bool Init();
-	void Start();
-	void Restart();
+	FString Start();
+	FString Restart();
 	bool Stop();
-	void Shutdown();
+	FString Shutdown();
 	/// <summary>
 	/// Get version of CR2 Interface API dll
 	/// </summary>
@@ -289,56 +287,92 @@ public:
 	/// height : Height between sensor and lamp. Unit : cm
 	/// vangleadd : Base value of incline. Unit : degree
 	/// </summary>
+#if(_WIN64)
 	void SetHeightIncline(int64 height, int64 vangleadd);
+#else
+	void SetHeightIncline(int32 height, int32 vangleadd);
+#endif
 
 	/// <summary>
 	/// Set usage of Camera Sensor
 	/// usage : camera sensor usage 0 -> Do not use, 1 -> Use
 	/// </summary>
+#if(_WIN64)
 	void ConfigureCamSensor(int64 usage);
+#else
+	void ConfigureCamSensor(int32 usage);
+#endif
 
 	/// <summary>
 	/// Usage of tee for current shot and set tee height
 	/// usage : 0->No Use, 1->Use
 	/// height : tee height. Unit : 1/1000m
 	/// </summary>
-	void Set_Tee(int64 usage, float height);
+#if(_WIN64)
+	void Set_Tee(int64 usage, int64 height);
+#else
+	void Set_Tee(int32 usage, int32 height);
+#endif
 
 	/// <summary>
 	/// Set Club
 	/// clubcode : DRIVER->1, IRON7->17, PUTTER->30
 	/// </summary>
+#if(_WIN64)
 	void Set_Club(int64 clubcode);
+#else
+	void Set_Club(int32 clubcode);
+#endif
 
 	/// <summary>
 	/// Set Wind information
 	/// mag : Wind velocity. Unit : 1/10ms
 	/// dir : Direction of WInd. Unit : degree ( Direction reference is target line and increase clockwise)
 	/// </summary>
-	void Set_Wind(float mag, float dir);
+#if(_WIN64)
+	void Set_Wind(int64 mag, int64 dir);
+#else
+	void Set_Wind(int32 mag, int32 dir);
+#endif
 
 	/// <summary>
 	/// Set Main Hand
 	/// hand : 1 is LEFT handed, 0 is RIGHT handed
 	/// </summary>
+#if(_WIN64)
 	void Set_MainHand(int64 _hand);
+#else
+	void Set_MainHand(int32 _hand);
+#endif
 
 	/// <summary>
 	/// Set Altitude
 	/// altitude : default is 0, Unit : m
 	/// </summary>
+#if(_WIN64)
 	void Set_Altitude(int64 altitude);
+#else
+	void Set_Altitude(int32 altitude);
+#endif
 
 	/// <summary>
 	/// Set Club data calculate option
 	/// option : 0 -> default, 1->no calculate, 2->no mark, 3 -> mark1, 4 -> mark2 (just use 1, 2, 3)
 	/// </summary>
+#if(_WIN64)
 	void Set_ClubdataCalOption(int64 altitude);
+#else
+	void Set_ClubdataCalOption(int32 altitude);
+#endif
 
 	/// <summary>
 	/// Set Tee State?
 	/// </summary>
+#if(_WIN64)
 	void SetTeeState(int64 param1, int64 param2);
+#else
+	void SetTeeState(int32 param1, int32 param2);
+#endif
 
 	/// <summary>
 	/// Get current operation status of Sensor
@@ -353,7 +387,11 @@ public:
 	/// Set allow Area to Sensor. tee area, ground area, putting area
 	/// whole three area : 0 -> Not allow, 1 -> Allow
 	/// </summary>
+#if(_WIN64)
 	void AllowArea(int64 tee, int64 ground, int64 putting);
+#else
+	void AllowArea(int32 tee, int32 ground, int32 putting);
+#endif
 
 	/// <summary>
 	/// Check ball position and existing in area
@@ -361,19 +399,12 @@ public:
 	/// </summary>
 	void CheckBallPosition();
 
-	void PrintResult(const FString title, int32 result);
+	FString PrintResult(const FString title, int result);
 
 public:
 	bool showLog = true;
 
-// public:
-// #if defined (_WIN64)
-// 	int64 p0;
-// 	int64 p1;
-// 	int64 p2;
-// #else
-// 	int32 p0;
-// 	int32 p1;
-// 	int32 p2;
-// #endif
+public:
+	UPROPERTY()
+	FHAND hand;
 };

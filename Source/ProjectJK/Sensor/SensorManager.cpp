@@ -8,39 +8,54 @@ void USensorManager::Initialize()
 	handler = NewObject<Uz3camHandler>((UObject*)GetTransientPackage(), Uz3camHandler::StaticClass());
 }
 
-void USensorManager::InitSensor()
+FString USensorManager::InitSensor()
 {
 	if (isSensorConnected)
-		return;
+		return "Already Connected";
 
 	isSensorConnected = handler->Init();
+	if (isSensorConnected)
+		return "Sensor Init Success";
+	else
+		return "Sensor Init Failed";
 }
 
-void USensorManager::StartSensor()
+FString USensorManager::StartSensor()
 {
 	if (isSensorConnected)
-		handler->Start();
+		return handler->Start();
+	else
+		return "Sensor No Connection";
 }
 
-void USensorManager::RestartSensor()
+FString USensorManager::RestartSensor()
 {
 	if (isSensorConnected)
-		handler->Restart();
+		return handler->Restart();
+	else
+		return "Sensor No Connection";
 }
 
-void USensorManager::StopSensor()
+FString USensorManager::StopSensor()
 {
+	bool stopSuccess = false;
 	if (isSensorConnected)
-		handler->Stop();
+		stopSuccess = handler->Stop();
+
+	if (stopSuccess)
+		return "Sensor Stop Success";
+	else
+		return "Sensor Stop Failed";
 }
 
-void USensorManager::ShutdownSensor()
+FString USensorManager::ShutdownSensor()
 {
 	if (isSensorConnected)
 	{
 		if (handler->Stop())
-			handler->Shutdown();
+			return handler->Shutdown();
 	}
+	return "Sensor No Connection";
 }
 
 ESensorState USensorManager::CheckSensorState()
@@ -51,10 +66,6 @@ ESensorState USensorManager::CheckSensorState()
 		return ESensorState::E_NULL;
 	case 1:
 		return ESensorState::E_READY;
-	case 16:
-		return ESensorState::E_GOODSHOT;
-	case 17:
-		return ESensorState::E_TRIALSHOT;
 	case 256:
 		return ESensorState::E_DISCONNECT;
 	case 257:
@@ -68,15 +79,20 @@ ESensorState USensorManager::CheckSensorState()
 	}
 }
 
+FString USensorManager::GetVersion()
+{
+	return handler->GetVersion();
+}
+
 void USensorManager::SetProperty()
 {
-	int32 useTee = 0; 
-	float teeHeight = 0;
+	int64 useTee = 0; 
+	int64 teeHeight = 0;
 
 	if (club == CR2CLUB_DRIVER)
 	{
 		useTee = 1;
-		teeHeight = 0.055;
+		teeHeight = 55;//mm
 	}
 	//tee set
 	handler->Set_Tee(useTee, teeHeight);
@@ -114,4 +130,15 @@ void USensorManager::StartProcess()
 	SetProperty();
 	RestartSensor();
 }
+bool USensorManager::IsSensorConnected()
+{
+	return isSensorConnected;
+}
+// 
+// void USensorManager::StartSensorCheck()
+// {
+// 	UJKGameInstance* instance = GAMEINSTANCE(this);
+// 	if(isSensorConnected)
+// 		instance->GetWorld()->GetTimerManager().SetTimer(SensorCheckTickHandler, this, instance->SensorManager->CheckSensorState())
+// }
 

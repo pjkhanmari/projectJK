@@ -40,14 +40,19 @@ UJKGameInstance * UJKGameInstance::GetJKGameInstance(UObject * OutterOwner)
 
 void UJKGameInstance::Init()
 {
+	Instance = this;
 	SensorManager = NewObject<USensorManager>((UObject*)GetTransientPackage(), USensorManager::StaticClass());
 	SensorManager->Initialize();
 	TableManager = NewObject<UTableManager>((UObject*)GetTransientPackage(), UTableManager::StaticClass());
 	TableManager->Initialize();
 	WidgetManager= NewObject<UWidgetManager>((UObject*)GetTransientPackage(), UWidgetManager::StaticClass());
 	WidgetManager->Initialize();
+
+	Super::Init();
 }
 
 void UJKGameInstance::Shutdown()
 {
+	SensorManager->ShutdownSensor();
+	Super::Shutdown();
 }
