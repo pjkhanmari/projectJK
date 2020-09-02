@@ -25,5 +25,6 @@ private:
 	UDataTable* LoadTableWIthDir(const FName& dir);
 
 public:
+	UPROPERTY()
 	UDataTable* DT_WidgetDir;
 };

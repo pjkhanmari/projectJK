@@ -20,6 +20,7 @@ public:
 	void NativeDestruct() override;
 
 	void BindUIEvent();
+	void BindDelegateEvent();
 	void SetSensorCommandResultText(FString text);
 	void SetClubText(FString text);
 	void SetHandText(FString text);
@@ -27,6 +28,8 @@ public:
 public:
 	UFUNCTION()
 	void StartCheck();
+	UFUNCTION()
+	void SetUIbyCallback();
 	UFUNCTION()
 	void OnClicked_InitSensor();
 	UFUNCTION()
@@ -81,6 +84,13 @@ public:
 	UTextBlock* TB_Hand;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
 	UTextBlock* TB_Version;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UTextBlock* TB_Carry;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UTextBlock* TB_BallSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UTextBlock* TB_PeakHeight;
+
 
 private:
 	UPROPERTY()

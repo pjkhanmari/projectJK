@@ -2,6 +2,8 @@
 
 #include "z3camHandler.h"
 #include "z3camSDK.h"
+#include "ProjectJK/Sensor/z3cam/z3camStructures/CR2_trajectory.h"
+#include "ProjectJK/Sensor/z3cam/z3camStructures/CR2_trajectoryEX.h"
 #include "ProjectJK/ProjectJK.h"
 
 
@@ -77,6 +79,21 @@ int32 Uz3camHandler::CR2_CALLBACKFUNC1(void* h, uint32 status, void* hsd, uint32
 						(int)pguid->Data4[6],
 						(int)pguid->Data4[7]);
 				}
+
+				UJKGameInstance* instance = GAMEINSTANCE(this);
+				instance->DataIOManager->SetShotData(*psdEX1);
+				FCR2_shotdata* psd = new FCR2_shotdata();
+				psd->ballspeedX10 = psdEX1->ballspeedx1000 / 100;
+				psd->azimuthX10 = psdEX1->azimuthX1000 / 100;
+				psd->inclineX10 = psdEX1->inclineX1000 / 100;
+				psd->backspin = psdEX1->backspinX1000 / 1000;
+				psd->sidespin = psdEX1->sidespinX1000 / 1000;
+				psd->clubspeed_BX10 = psdEX1->clubspeedX1000 / 100;
+				psd->clubfaceangleX10 = psdEX1->faceangleX1000 / 100;
+				psd->clubpathX10 = psdEX1->clubpathX1000 / 100;
+
+				CalCulateTrajectory(psd);
+				
 	// 			printf("category: %d\n", psdEX1->category);
 	// 			printf("right0left1: %d\n", psdEX1->rightlefthanded);
 	// 			printf("ball pos: %08lf %08lf %08lf\n", psdEX1->xposx1000 / 1000.0, psdEX1->yposx1000 / 1000.0, psdEX1->zposx1000 / 1000.0);
@@ -400,6 +417,31 @@ void Uz3camHandler::AllowArea(int32 tee, int32 ground, int32 putting)
 	int cmd = CR2CMD_AREAALLOW;
 	int res = Uz3camSDK::CR2_command(hand.h, cmd, tee, ground, putting, 0);
 	PrintResult(TEXT("CR2CMD_AREAALLOW"), res);
+}
+
+void Uz3camHandler::CalCulateTrajectory(FCR2_shotdata* data)
+{
+	FCR2_trajectory trj, *ptrj;
+	FCR2_trajectoryEX trjEX, *ptrjEX;
+
+	ptrj = &trj;
+	ptrjEX = &trjEX;
+
+#if defined (_WIN64)
+	int64 p0 = (int64)data;
+	int64 p1 = (int64)ptrj;
+	int64 p2 = (int64)ptrjEX;
+#else
+	int32 p0 = (int32)data;
+	int32 p1 = (int32)ptrj;
+	int32 p2 = (int32)ptrjEX;
+#endif // (_WIN64)
+	int cmd = CR2CMD_CALC_TRAJECTORY;
+	int res = Uz3camSDK::CR2_command(hand.h, cmd, p0, p1, p2, 0);
+
+	UJKGameInstance* instance = GAMEINSTANCE(this);
+	instance->DataIOManager->SetTrajectoryData(trjEX);
+	PrintResult(TEXT("CR2CMD_CALC_TRAJECTORY"), res);
 }
 
 void Uz3camHandler::CheckBallPosition()

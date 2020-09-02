@@ -7,16 +7,16 @@
 
 void UWidgetManager::Initialize()
 {
-	UP_map.Reset();
+	WBP_map.Reset();
 	UP_order.Empty();
 	zOrderAuto = 0;
 }
 
-void UWidgetManager::ShowUserWidgetCreateAuto(EUIPage eUP)
+void UWidgetManager::ShowUserWidgetCreateAuto(EWidgetBluePrint wbp)
 {
-	UUserWidget* widget = GetUserWidget(eUP);
+	UUserWidget* widget = GetUserWidget(wbp);
 	if (!IsValid(widget))
-		widget = CreateUserWidget(eUP);
+		widget = CreateUserWidget(wbp);
 
 	if (!widget->IsInViewport())
 	{
@@ -26,11 +26,11 @@ void UWidgetManager::ShowUserWidgetCreateAuto(EUIPage eUP)
 	zOrderAuto++;
 }
 
-void UWidgetManager::ShowUserWidgetCreateAutoForceOrder(EUIPage eUP, int32 zOrder)
+void UWidgetManager::ShowUserWidgetCreateAutoForceOrder(EWidgetBluePrint wbp, int32 zOrder)
 {
-	UUserWidget* widget = GetUserWidget(eUP);
+	UUserWidget* widget = GetUserWidget(wbp);
 	if (!IsValid(widget))
-		widget = CreateUserWidget(eUP);
+		widget = CreateUserWidget(wbp);
 
 	if (!widget->IsInViewport())
 	{
@@ -39,25 +39,25 @@ void UWidgetManager::ShowUserWidgetCreateAutoForceOrder(EUIPage eUP, int32 zOrde
 	}
 }
 
-UUserWidget* UWidgetManager::GetUserWidget(EUIPage eUP)
+UUserWidget* UWidgetManager::GetUserWidget(EWidgetBluePrint wbp)
 {
-	if(UP_map.Contains(eUP))
-		UUserWidget* widget = *UP_map.Find(eUP);
+	if(WBP_map.Contains(wbp))
+		UUserWidget* widget = *WBP_map.Find(wbp);
 
 	return nullptr;
 }
 
-UUserWidget* UWidgetManager::CreateUserWidget(EUIPage eUP)
+UUserWidget* UWidgetManager::CreateUserWidget(EWidgetBluePrint wbp)
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
-	FName key = FName(*FString::FromInt((int32)eUP));
+	FName key = FName(*FString::FromInt((int32)wbp));
 	FWidgetDirTableRow* pRow = instance->TableManager->GetWidgetDirTableRow(key);
 //	return nullptr;
 	UClass* subclass = (pRow->BlueprintClass).Get();
 	UUserWidget* widget = CreateWidget<UUserWidget>(instance, pRow->BlueprintClass);
 	if (widget)
 	{
-		UP_map.Emplace(eUP, widget);
+		WBP_map.Emplace(wbp, widget);
 		return widget;
 	}
 	else
@@ -79,7 +79,7 @@ void UWidgetManager::ChangeUIPage(EUIPage PageTogo)
 
 	UP_order.Push(PageTogo);
 
-	for (auto it = UP_map.CreateIterator(); it; ++it)
+	for (auto it = WBP_map.CreateIterator(); it; ++it)
 	{
 		UUserWidget* up = (*it).Value;
 		if (IsValid(up))
@@ -88,14 +88,40 @@ void UWidgetManager::ChangeUIPage(EUIPage PageTogo)
 			{
 				up->RemoveFromViewport();
 				up = nullptr;
-				break;
 			}
 		}
 	}
 	zOrderAuto = 0;
 
-	instance->WidgetManager->ShowUserWidgetCreateAuto(PageTogo);
-	//instance->WidgetManager->ShowUserWidget(PageTogo);
+	ShowUIPage(PageTogo);
+}
+
+void UWidgetManager::ShowUIPage(EUIPage PageTogo)
+{
+	switch (PageTogo)
+	{
+		case EUIPage::UIPage_None:
+		{
+			break;
+		}
+		case EUIPage::UIPage_TestUI:
+		{
+			ShowUserWidgetCreateAuto(EWidgetBluePrint::WBP_TestUI);
+			ShowUserWidgetCreateAuto(EWidgetBluePrint::WBP_PauseButton);
+			break;
+		}
+		case EUIPage::UIPage_z3camTest:
+		{
+			ShowUserWidgetCreateAuto(EWidgetBluePrint::WBP_z3camTest);
+			ShowUserWidgetCreateAuto(EWidgetBluePrint::WBP_PauseButton);
+			break;
+		}
+		case EUIPage::UIPage_PauseMenu:
+		{
+			ShowUserWidgetCreateAuto(EWidgetBluePrint::WBP_PauseMenu);
+			break;
+		}
+	}
 }
 
 EUIPage UWidgetManager::GetCurrentUP()

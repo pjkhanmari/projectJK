@@ -14,4 +14,10 @@ class PROJECTJK_API AProjectJKGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+	AProjectJKGameModeBase(const FObjectInitializer& ObjectInitializer);
+
+	void BeginPlay() override;
+	void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	
 };

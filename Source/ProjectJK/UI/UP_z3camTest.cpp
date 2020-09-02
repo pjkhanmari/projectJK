@@ -74,6 +74,14 @@ void UUP_z3camTest::BindUIEvent()
 	}
 }
 
+void UUP_z3camTest::BindDelegateEvent()
+{
+	UJKGameInstance* instance = GAMEINSTANCE(this);
+	instance->DelegateCollection->NewTrajectoryDataSet.Clear();
+	instance->DelegateCollection->NewTrajectoryDataSet.AddDynamic(this, &UUP_z3camTest::SetUIbyCallback);
+
+}
+
 void UUP_z3camTest::SetSensorCommandResultText(FString text)
 {
 	TB_SensorCheckState->SetText(FText::FromString(text));
@@ -120,6 +128,16 @@ void UUP_z3camTest::StartCheck()
 		break;
 	}
 	RTB_SensorState->SetText(SensorText);
+}
+
+void UUP_z3camTest::SetUIbyCallback()
+{
+	UJKGameInstance* instance = GAMEINSTANCE(this);
+	FCR2_trajectoryEX trj = instance->DataIOManager->GetTrajectoryData();
+	FCR2_shotdataEX sd = instance->DataIOManager->GetShotData();
+	TB_Carry->SetText(FText::AsNumber(trj.carrydistance));
+	TB_BallSpeed->SetText(FText::AsNumber(sd.ballspeedx1000 / 1000));
+	TB_PeakHeight->SetText(FText::AsNumber(trj.peakheight));
 }
 
 void UUP_z3camTest::OnClicked_InitSensor()

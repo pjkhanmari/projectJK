@@ -47,6 +47,10 @@ void UJKGameInstance::Init()
 	TableManager->Initialize();
 	WidgetManager= NewObject<UWidgetManager>((UObject*)GetTransientPackage(), UWidgetManager::StaticClass());
 	WidgetManager->Initialize();
+	DataIOManager = NewObject<UDataIOManager>((UObject*)GetTransientPackage(), UDataIOManager::StaticClass());
+	DataIOManager->Initialize();
+	DelegateCollection = NewObject<UDelegateCollection>((UObject*)GetTransientPackage(), UDelegateCollection::StaticClass());
+	DelegateCollection->Initialize();
 
 	Super::Init();
 }

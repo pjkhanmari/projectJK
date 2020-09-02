@@ -7,6 +7,8 @@
 #include "ProjectJK/Sensor/SensorManager.h"
 #include "ProjectJK/Global/TableManager.h"
 #include "ProjectJK/Global/WidgetManager.h"
+#include "ProjectJK/Global/DataIOManager.h"
+#include "ProjectJK/Global/DelegateCollection.h"
 #include "JKGameInstance.generated.h"
 
 /**
@@ -28,4 +30,7 @@ public:
 	UPROPERTY() class USensorManager* SensorManager = nullptr;
 	UPROPERTY() class UTableManager* TableManager = nullptr;
 	UPROPERTY() class UWidgetManager* WidgetManager = nullptr;
+	UPROPERTY() class UDataIOManager* DataIOManager = nullptr;
+	UPROPERTY() class UDelegateCollection* DelegateCollection = nullptr;
+	
 };

@@ -35,7 +35,7 @@ void *v_dllHandle;
 // Method to import a DLL.
 bool Uz3camSDK::importDLL(FString folder, FString name)
 {
-	FString filePath = *FPaths::ProjectPluginsDir() + folder + "/" + name;
+	FString filePath = *FPaths::ProjectContentDir() + folder + "/" + name;
 
 	if (FPaths::FileExists(filePath))
 	{

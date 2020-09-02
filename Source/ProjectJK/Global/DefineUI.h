@@ -13,5 +13,17 @@ enum class EUIPage : uint8
 {
 	UIPage_None = 0,
 	UIPage_TestUI = 1,
-	UIPage_z3camTest = 2
+	UIPage_z3camTest = 2,
+	UIPage_PauseMenu = 3,
+};
+
+
+UENUM(BlueprintType)
+enum class EWidgetBluePrint : uint8
+{
+	WBP_None = 0,
+	WBP_TestUI = 1,
+	WBP_z3camTest = 2,
+	WBP_PauseMenu = 3,
+	WBP_PauseButton = 4
 };

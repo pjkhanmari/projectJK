@@ -393,6 +393,8 @@ public:
 	void AllowArea(int32 tee, int32 ground, int32 putting);
 #endif
 
+	void CalCulateTrajectory(FCR2_shotdata* data);
+
 	/// <summary>
 	/// Check ball position and existing in area
 	/// exist check tee, ground, putting area, also check detail position on x, y, z property

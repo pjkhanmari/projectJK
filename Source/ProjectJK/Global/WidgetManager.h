@@ -18,17 +18,18 @@ class PROJECTJK_API UWidgetManager : public UObject
 public:
 	void Initialize();
 
-	void ShowUserWidgetCreateAuto(EUIPage eUP);
-	void ShowUserWidgetCreateAutoForceOrder(EUIPage eUP, int32 zOrder);
-	UUserWidget* GetUserWidget(EUIPage eUP);
-	UUserWidget* CreateUserWidget(EUIPage eUP);
+	void ShowUserWidgetCreateAuto(EWidgetBluePrint wbp);
+	void ShowUserWidgetCreateAutoForceOrder(EWidgetBluePrint wbp, int32 zOrder);
+	UUserWidget* GetUserWidget(EWidgetBluePrint wbp);
+	UUserWidget* CreateUserWidget(EWidgetBluePrint wbp);
 	void ChangeUIPage(EUIPage PageTogo);
+	void ShowUIPage(EUIPage PageTogo);
 	EUIPage GetCurrentUP();
 	EUIPage GetPrevUP();
 
 public:
 	UPROPERTY()
-	TMap<EUIPage, UUserWidget*> UP_map;
+	TMap<EWidgetBluePrint, UUserWidget*> WBP_map;
 	UPROPERTY()
 	TArray<EUIPage> UP_order;
 
