@@ -43,7 +43,10 @@ FString USensorManager::StopSensor()
 		stopSuccess = handler->Stop();
 
 	if (stopSuccess)
+	{
+		isSensorConnected = false;
 		return "Sensor Stop Success";
+	}
 	else
 		return "Sensor Stop Failed";
 }
@@ -53,7 +56,10 @@ FString USensorManager::ShutdownSensor()
 	if (isSensorConnected)
 	{
 		if (handler->Stop())
+		{
+			isSensorConnected = false;
 			return handler->Shutdown();
+		}
 	}
 	return "Sensor No Connection";
 }
@@ -123,12 +129,12 @@ void USensorManager::SetProperty()
 	handler->Set_ClubdataCalOption(calculateClubOption);
 }
 
-void USensorManager::StartProcess()
+FString USensorManager::StartProcess()
 {
 	InitSensor();
 	StartSensor();
 	SetProperty();
-	RestartSensor();
+	return RestartSensor();
 }
 bool USensorManager::IsSensorConnected()
 {
@@ -141,4 +147,3 @@ bool USensorManager::IsSensorConnected()
 // 	if(isSensorConnected)
 // 		instance->GetWorld()->GetTimerManager().SetTimer(SensorCheckTickHandler, this, instance->SensorManager->CheckSensorState())
 // }
-

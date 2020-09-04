@@ -39,6 +39,8 @@ public:
 	UFUNCTION()
 	void OnClicked_ShutdownSensor();
 	UFUNCTION()
+	void OnClicked_OneButton();
+	UFUNCTION()
 	void OnClicked_SelectDriver();
 	UFUNCTION()
 	void OnClicked_SelectIron();
@@ -61,6 +63,8 @@ public:
 	UButton* BTN_StopSensor;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
 	UButton* BTN_ShutdownSensor;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UButton* BTN_OneButton;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
 	UButton* BTN_Driver;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)

@@ -19,12 +19,12 @@ struct PROJECTJK_API FCR2_trajectoryEX
 	GENERATED_USTRUCT_BODY()
 	
 public:
-	int count;
+	int32 count;
 	FCR2_point pts_mm[CR2TRAJECTORYMAXCOUNT];	// Unit of x, y, z: [mm],   t: [0.001sec == msec]
-	int peakheight;								// [m]
-	int carrydistance;							// [m]
-	int sidedistance;							// [m]
-	int flighttimeX1000;						// [msec]
+	int32 peakheight;								// [m]
+	int32 carrydistance;							// [m]
+	int32 sidedistance;							// [m]
+	int32 flighttimeX1000;						// [msec]
 	FCR2_vs vs[CR2TRAJECTORYMAXCOUNT];	// Unit of vx, vy, vz: [mm/s]
 										//       sidespin, backspin: [rpm]
 										//       t: [0.001sec == msec]

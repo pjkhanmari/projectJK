@@ -18,5 +18,5 @@ public:
 	void BeginPlay() override;
 	void EndPlay(const EEndPlayReason::Type reason) override;
 
-	void Tick(float DeltaSeconds) override;
+	//void Tick(float DeltaSeconds) override;
 };

@@ -58,5 +58,10 @@ void UJKGameInstance::Init()
 void UJKGameInstance::Shutdown()
 {
 	SensorManager->ShutdownSensor();
+	SensorManager->ConditionalBeginDestroy();
+	TableManager->ConditionalBeginDestroy();
+	WidgetManager->ConditionalBeginDestroy();
+	DataIOManager->ConditionalBeginDestroy();
+	DelegateCollection->ConditionalBeginDestroy();
 	Super::Shutdown();
 }

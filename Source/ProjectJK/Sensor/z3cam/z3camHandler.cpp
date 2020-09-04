@@ -14,7 +14,8 @@ Uz3camHandler::Uz3camHandler()
 
 Uz3camHandler::~Uz3camHandler()
 {
-
+	if (importSuccess)
+		Uz3camSDK::freeDLL();
 }
 
 #if defined(_WIN64)
@@ -32,12 +33,12 @@ int32 Uz3camHandler::CR2_CALLBACKFUNC1(void* h, uint32 status, void* hsd, uint32
 int32 Uz3camHandler::CR2_CALLBACKFUNC1(void* h, uint32 status, void* hsd, uint32 cbfuncid, int32 userparam)
 #endif
 {
-	UE_LOG(LogSensor, Log, TEXT("[CALLBACK] func1 \n"));
-	UE_LOG(LogSensor, Log, TEXT("hand : %p"), h);
-	UE_LOG(LogSensor, Log, TEXT("status : 0x%0x"), status);
-	UE_LOG(LogSensor, Log, TEXT("hsd : 0x%p"), hsd);
-	UE_LOG(LogSensor, Log, TEXT("cbfunc1_id : %d"), cbfuncid);
-	UE_LOG(LogSensor, Log, TEXT("userparam : 0x%0x"), userparam);
+// 	UE_LOG(LogSensor, Log, TEXT("[CALLBACK] func1"));
+// 	UE_LOG(LogSensor, Log, TEXT("hand : %p"), h);
+// 	UE_LOG(LogSensor, Log, TEXT("status : 0x%0x"), status);
+// 	UE_LOG(LogSensor, Log, TEXT("hsd : 0x%p"), hsd);
+// 	UE_LOG(LogSensor, Log, TEXT("cbfunc1_id : %d"), cbfuncid);
+// 	UE_LOG(LogSensor, Log, TEXT("userparam : 0x%0x"), userparam);
 
 	switch (status) 
 	{
@@ -61,24 +62,24 @@ int32 Uz3camHandler::CR2_CALLBACKFUNC1(void* h, uint32 status, void* hsd, uint32
 
 				//--
 				psdEX1 = (FCR2_shotdataEX*)hsd;
-
-				printf("-----------\n");
-				{
-					FCR2_guid *pguid;
-					pguid = &psdEX1->shotguid;
-					UE_LOG(LogSensor, Log, TEXT("guid: %08x-%04x-%04x-%02x-%02x-%02x-%02x-%02x-%02x-%02x-%02x"),
-						(int)pguid->Data1,
-						(int)pguid->Data2,
-						(int)pguid->Data3,
-						(int)pguid->Data4[0],
-						(int)pguid->Data4[1],
-						(int)pguid->Data4[2],
-						(int)pguid->Data4[3],
-						(int)pguid->Data4[4],
-						(int)pguid->Data4[5],
-						(int)pguid->Data4[6],
-						(int)pguid->Data4[7]);
-				}
+ 
+// 				printf("-----------\n");
+// 				{
+// 					FCR2_guid *pguid;
+// 					pguid = &psdEX1->shotguid;
+// 					UE_LOG(LogSensor, Log, TEXT("guid: %08x-%04x-%04x-%02x-%02x-%02x-%02x-%02x-%02x-%02x-%02x"),
+// 						(int)pguid->Data1,
+// 						(int)pguid->Data2,
+// 						(int)pguid->Data3,
+// 						(int)pguid->Data4[0],
+// 						(int)pguid->Data4[1],
+// 						(int)pguid->Data4[2],
+// 						(int)pguid->Data4[3],
+// 						(int)pguid->Data4[4],
+// 						(int)pguid->Data4[5],
+// 						(int)pguid->Data4[6],
+// 						(int)pguid->Data4[7]);
+// 				}
 
 				UJKGameInstance* instance = GAMEINSTANCE(this);
 				instance->DataIOManager->SetShotData(*psdEX1);
@@ -93,41 +94,7 @@ int32 Uz3camHandler::CR2_CALLBACKFUNC1(void* h, uint32 status, void* hsd, uint32
 				psd->clubpathX10 = psdEX1->clubpathX1000 / 100;
 
 				CalCulateTrajectory(psd);
-				
-	// 			printf("category: %d\n", psdEX1->category);
-	// 			printf("right0left1: %d\n", psdEX1->rightlefthanded);
-	// 			printf("ball pos: %08lf %08lf %08lf\n", psdEX1->xposx1000 / 1000.0, psdEX1->yposx1000 / 1000.0, psdEX1->zposx1000 / 1000.0);
-	// 			printf("---\n");
-	// 
-	// 			printf("vmag : %10lf\n", psdEX1->ballspeedx1000 / 1000.0);
-	// 			printf("incline : %10lf\n", psdEX1->inclineX1000 / 1000.0);
-	// 			printf("azimuth : %10lf\n", psdEX1->azimuthX1000 / 1000.0);
-	// 			printf("spincalc method : %d\n", psdEX1->spincalc_method);
-	// 			printf("assurance_spin: %d\n", psdEX1->assurance_spin);
-	// 			printf("backspin     : %10lf [rpm]\n", psdEX1->backspinX1000 / 1000.0);
-	// 			printf("sidespin     : %10lf [rpm]\n", psdEX1->sidespinX1000 / 1000.0);
-	// 			printf("rollspin     : %10lf [rpm]\n", psdEX1->rollspinX1000 / 1000.0);
-	// 			printf("---\n");
-	// 
-	// 			printf("clubcalc method             : %d\n", psdEX1->clubcalc_method);
-	// 			printf("assurance_clubspeed         : %d\n", psdEX1->assurance_clubspeed);
-	// 			printf("assurance_clubpath          : %d\n", psdEX1->assurance_clubpath);
-	// 			printf("assurance_faceangle         : %d\n", psdEX1->assurance_faceangle);
-	// 			printf("assurance_attackangle       : %d\n", psdEX1->assurance_attackangle);
-	// 			printf("assurance_loftangle         : %d\n", psdEX1->assurance_loftangle);
-	// 			printf("assurance_lieangle          : %d\n", psdEX1->assurance_lieangle);
-	// 			printf("assurance_faceimpactLateral : %d\n", psdEX1->assurance_faceimpactLateral);
-	// 			printf("assurance_faceimpactVertical: %d\n", psdEX1->assurance_faceimpactVertical);
-	// 
-	// 
-	// 			printf("clubspeed                   : %10lf \n", psdEX1->clubspeedX1000 / 1000.0);
-	// 			printf("clubpathX1000               : %10lf \n", psdEX1->clubpathX1000 / 1000.0);
-	// 			printf("faceangleX1000              : %10lf \n", psdEX1->faceangleX1000 / 1000.0);
-	// 			printf("attackangleX1000            : %10lf \n", psdEX1->attackangleX1000 / 1000.0);
-	// 			printf("loftangleX1000              : %10lf \n", psdEX1->loftangleX1000 / 1000.0);
-	// 			printf("lieangleX1000               : %10lf \n", psdEX1->lieangleX1000 / 1000.0);
-	// 			printf("faceimpactLateralX1000      : %10lf \n", psdEX1->faceimpactVerticalX1000 / 1000.0);
-	// 			printf("---\n");
+
 			}
 			else {
 				UE_LOG(LogSensor, Log, TEXT("cbfunc_id : %d is NOT supported yet.."), cbfuncid);
@@ -146,14 +113,14 @@ int32 Uz3camHandler::CR2_CALLBACKFUNC1(void* h, uint32 status, void* hsd, uint32
 
 void Uz3camHandler::Initialize()
 {
-	bool success = false;
+	importSuccess = false;
 #if (_WIN64)
-	success = Uz3camSDK::importDLL("z3cam", "z3camAdapt64.dll");
+	importSuccess = Uz3camSDK::importDLL("z3cam", "z3camAdapt64.dll");
 #else
-	success = Uz3camSDK::importDLL("z3cam", "z3camAdapt.dll");
+	importSuccess = Uz3camSDK::importDLL("z3cam", "z3camAdapt.dll");
 #endif
 
-	if (success)
+	if (importSuccess)
 	{
 		UE_LOG(LogSensor, Log, TEXT("Import DLL success"));
 		if (Uz3camSDK::import_initMethod())
@@ -205,7 +172,7 @@ bool Uz3camHandler::Init()
 
 FString Uz3camHandler::Start()
 {
-	std::function<int32(Uz3camHandler&, void* h, uint32 status, void* hsd, uint32 cbfuncid, int64 userparam)> cb = &Uz3camHandler::CR2_CALLBACKFUNC1;
+	hand.cb = &Uz3camHandler::CR2_CALLBACKFUNC1;
 	int cmd, res;
 
 #if defined(_WIN64)
@@ -213,7 +180,7 @@ FString Uz3camHandler::Start()
 
 	userparam = 1234;			// Whatever..
 	//int64 p0 = reinterpret_cast<int64>(cb);
-	int64 p0 = (int64)&cb;
+	int64 p0 = (int64)&cbWrapper;
 	int64 p1 = (int64)1;
 	int64 p2 = (int64)userparam;
 
@@ -221,7 +188,7 @@ FString Uz3camHandler::Start()
 	int32 userparam; 
 
 	userparam = 1234;			// Whatever..
-	int32 p0 = (int32)(&CR2_CALLBACKFUNC1);
+	int32 p0 = (int32)&(hand.cb);
 	int32 p1 = (int32)1;
 	int32 p2 = (int32)userparam;
 #endif
@@ -264,20 +231,29 @@ FString Uz3camHandler::Shutdown()
 FString Uz3camHandler::GetVersion()
 {
 #if defined(_WIN64)
-	int64 p0 = 0; //major
-	int64 p1 = 0; //minor
-	int64 p2 = 0; //buildnum
+	int64 major = 0; //major
+	int64 minor = 0; //minor
+	int64 buildnum = 0; //buildnum
+
+	int64 p0 = (int64)&major;
+	int64 p1 = (int64)&minor;
+	int64 p2 = (int64)&buildnum;
 #else
-	int32 p0 = 0; //major
-	int32 p1 = 0; //minor
-	int32 p2 = 0; //buildnum
+	int32 major = 0; //major
+	int32 minor = 0; //minor
+	int32 buildnum = 0; //buildnum
+
+	int32 p0 = (int32)&major;
+	int32 p1 = (int32)&minor;
+	int32 p2 = (int32)&buildnum;
 #endif
+
 	int cmd = CR2CMD_DLLVERSION;
 	int res = Uz3camSDK::CR2_command(hand.h, cmd, p0, p1, p2, 0);
 
 	FString version;
 	if (res == CR2_OK)
-		version = FString::FromInt(p0) + "_" + FString::FromInt(p1) + "_" + FString::FromInt(p2);
+		version = FString::FromInt(major) + "_" + FString::FromInt(minor) + "_" + FString::FromInt(buildnum);
 	else
 		version = "0_0_0";
 
@@ -518,4 +494,7 @@ FString Uz3camHandler::PrintResult(const FString title, int result)
 	return msg;
 }
 
-
+int32 cbWrapper(void * h, uint32 status, void * hsd, uint32 cbfuncid, int64 userparam)
+{
+	return GAMEINSTANCE(nullptr)->SensorManager->handler->CR2_CALLBACKFUNC1(h, status, hsd, cbfuncid, userparam);
+}

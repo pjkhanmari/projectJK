@@ -9,19 +9,21 @@
 
 void ATestGameModeBase::BeginPlay()
 {
+	Super::BeginPlay();
 	UJKGameInstance* instance = GAMEINSTANCE(this);
 	instance->WidgetManager->ChangeUIPage(EUIPage::UIPage_TestUI);
 	//instance->SensorManager->StartSensor();
 }
 
-void ATestGameModeBase::EndPlay(const EEndPlayReason::Type reason)
+void ATestGameModeBase::EndPlay(const EEndPlayReason::Type EndReason)
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
 	instance->SensorManager->ShutdownSensor();
+	Super::EndPlay(EndReason);
 }
-
-void ATestGameModeBase::Tick(float DeltaSeconds)
-{
-	UJKGameInstance* instance = GAMEINSTANCE(this);
-	ESensorState state = instance->SensorManager->CheckSensorState();
-}
+// 
+// void ATestGameModeBase::Tick(float DeltaSeconds)
+// {
+// 	UJKGameInstance* instance = GAMEINSTANCE(this);
+// 	ESensorState state = instance->SensorManager->CheckSensorState();
+// }

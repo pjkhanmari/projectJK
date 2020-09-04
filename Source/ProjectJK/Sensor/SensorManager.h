@@ -40,7 +40,7 @@ public:
 	ESensorState CheckSensorState();
 	FString GetVersion();
 	void SetProperty();
-	void StartProcess();
+	FString StartProcess();
 	bool IsSensorConnected();
 //	void StartSensorCheck();
 
@@ -60,7 +60,7 @@ public:
 	UPROPERTY()
 	int32 calculateClubOption;
 
-private:
+public:
 	UPROPERTY() 
 	class Uz3camHandler* handler = nullptr;
 	UPROPERTY() 

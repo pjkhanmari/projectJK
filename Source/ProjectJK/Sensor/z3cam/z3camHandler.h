@@ -249,7 +249,10 @@ struct FHAND {
 public:
 	void* h;
 	TArray<uint32> ccode;
+	std::function<int32(Uz3camHandler&, void* h, uint32 status, void* hsd, uint32 cbfuncid, int64 userparam)> cb;
 };
+
+static int32 cbWrapper(void* h, uint32 status, void* hsd, uint32 cbfuncid, int64 userparam);
 
 UCLASS()
 class PROJECTJK_API Uz3camHandler : public UObject
@@ -404,9 +407,10 @@ public:
 	FString PrintResult(const FString title, int result);
 
 public:
+	UPROPERTY()
 	bool showLog = true;
-
-public:
+	UPROPERTY()
+	bool importSuccess;
 	UPROPERTY()
 	FHAND hand;
 };

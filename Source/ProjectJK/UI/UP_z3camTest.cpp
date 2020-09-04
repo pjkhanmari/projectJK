@@ -4,19 +4,22 @@
 #include "UP_z3camTest.h"
 #include "ProjectJK/ProjectJK.h"
 #include "ProjectJK/Sensor/z3cam/z3camHandler.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 
 void UUP_z3camTest::NativeConstruct()
 {
 	Super::NativeConstruct();
 	BindUIEvent();
+	BindDelegateEvent();
 	UJKGameInstance* instance = GAMEINSTANCE(this);
 	SensorText = FText::FromString(TEXT(""));
-	instance->GetWorld()->GetTimerManager().SetTimer(SensorCheckTickHandler, this, &UUP_z3camTest::StartCheck, .5f, true, 1.f);
+	instance->GetWorld()->GetTimerManager().SetTimer(SensorCheckTickHandler, this, &UUP_z3camTest::StartCheck, .3f, true, 1.f);
 }
 
 void UUP_z3camTest::NativeDestruct()
 {
+	UKismetSystemLibrary::K2_ClearAndInvalidateTimerHandle(GetWorld(), SensorCheckTickHandler);
 	Super::NativeDestruct();
 }
 
@@ -41,6 +44,11 @@ void UUP_z3camTest::BindUIEvent()
 	{
 		BTN_ShutdownSensor->OnClicked.Clear();
 		BTN_ShutdownSensor->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_ShutdownSensor);
+	}
+	if (IsValid(BTN_OneButton))
+	{
+		BTN_OneButton->OnClicked.Clear();
+		BTN_OneButton->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_OneButton);
 	}
 	if (IsValid(BTN_Driver))
 	{
@@ -133,11 +141,19 @@ void UUP_z3camTest::StartCheck()
 void UUP_z3camTest::SetUIbyCallback()
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
+	FTimerDelegate DelayedCall;
 	FCR2_trajectoryEX trj = instance->DataIOManager->GetTrajectoryData();
 	FCR2_shotdataEX sd = instance->DataIOManager->GetShotData();
-	TB_Carry->SetText(FText::AsNumber(trj.carrydistance));
-	TB_BallSpeed->SetText(FText::AsNumber(sd.ballspeedx1000 / 1000));
-	TB_PeakHeight->SetText(FText::AsNumber(trj.peakheight));
+	DelayedCall.BindLambda([instance, this, trj, sd]
+	{
+		if(IsValid(TB_Carry))
+			TB_Carry->SetText(FText::AsNumber(trj.carrydistance));
+		int32 bs = sd.ballspeedx1000 / 1000;
+		TB_BallSpeed->SetText(FText::AsNumber(bs));
+		TB_PeakHeight->SetText(FText::AsNumber(trj.peakheight));
+	});
+
+	instance->GetWorld()->GetTimerManager().SetTimerForNextTick(DelayedCall);
 }
 
 void UUP_z3camTest::OnClicked_InitSensor()
@@ -162,6 +178,12 @@ void UUP_z3camTest::OnClicked_ShutdownSensor()
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
 	SetSensorCommandResultText(instance->SensorManager->ShutdownSensor());
+}
+
+void UUP_z3camTest::OnClicked_OneButton()
+{
+	UJKGameInstance* instance = GAMEINSTANCE(this);
+	SetSensorCommandResultText(instance->SensorManager->StartProcess());
 }
 
 void UUP_z3camTest::OnClicked_SelectDriver()

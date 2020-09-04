@@ -4,6 +4,7 @@
 #include "UP_PauseButton.h"
 #include "ProjectJK/JKGameInstance.h"
 #include "ProjectJK/ProjectJK.h"
+#include "Kismet/GameplayStatics.h"
 
 void UUP_PauseButton::NativeConstruct()
 {
@@ -28,5 +29,6 @@ void UUP_PauseButton::BindUIEvent()
 void UUP_PauseButton::OnClicked_Pause()
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
 	instance->WidgetManager->ChangeUIPage(EUIPage::UIPage_PauseMenu);
 }
