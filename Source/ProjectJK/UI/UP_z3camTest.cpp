@@ -11,7 +11,7 @@ void UUP_z3camTest::NativeConstruct()
 {
 	Super::NativeConstruct();
 	BindUIEvent();
-	BindDelegateEvent();
+	//BindDelegateEvent();
 	UJKGameInstance* instance = GAMEINSTANCE(this);
 	SensorText = FText::FromString(TEXT(""));
 	instance->GetWorld()->GetTimerManager().SetTimer(SensorCheckTickHandler, this, &UUP_z3camTest::StartCheck, .3f, true, 1.f);
@@ -21,6 +21,16 @@ void UUP_z3camTest::NativeDestruct()
 {
 	UKismetSystemLibrary::K2_ClearAndInvalidateTimerHandle(GetWorld(), SensorCheckTickHandler);
 	Super::NativeDestruct();
+}
+
+void UUP_z3camTest::NativeTick(const FGeometry & MyGeometry, float InDeltaTime)
+{
+	UJKGameInstance* instance = GAMEINSTANCE(this);
+	if (instance->valueChanged)
+	{
+		SetUIbyCallback();
+		instance->valueChanged = false;
+	}
 }
 
 void UUP_z3camTest::BindUIEvent()
@@ -141,19 +151,14 @@ void UUP_z3camTest::StartCheck()
 void UUP_z3camTest::SetUIbyCallback()
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
-	FTimerDelegate DelayedCall;
 	FCR2_trajectoryEX trj = instance->DataIOManager->GetTrajectoryData();
 	FCR2_shotdataEX sd = instance->DataIOManager->GetShotData();
-	DelayedCall.BindLambda([instance, this, trj, sd]
-	{
-		if(IsValid(TB_Carry))
-			TB_Carry->SetText(FText::AsNumber(trj.carrydistance));
-		int32 bs = sd.ballspeedx1000 / 1000;
-		TB_BallSpeed->SetText(FText::AsNumber(bs));
-		TB_PeakHeight->SetText(FText::AsNumber(trj.peakheight));
-	});
 
-	instance->GetWorld()->GetTimerManager().SetTimerForNextTick(DelayedCall);
+	if(IsValid(TB_Carry))
+		TB_Carry->SetText(FText::AsNumber(trj.carrydistance));
+	int32 bs = sd.ballspeedx1000 / 1000;
+	TB_BallSpeed->SetText(FText::AsNumber(bs));
+	TB_PeakHeight->SetText(FText::AsNumber(trj.peakheight));
 }
 
 void UUP_z3camTest::OnClicked_InitSensor()

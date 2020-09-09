@@ -93,7 +93,8 @@ int32 Uz3camHandler::CR2_CALLBACKFUNC1(void* h, uint32 status, void* hsd, uint32
 				psd->clubfaceangleX10 = psdEX1->faceangleX1000 / 100;
 				psd->clubpathX10 = psdEX1->clubpathX1000 / 100;
 
-				CalCulateTrajectory(psd);
+				if (CalCulateTrajectory(psd) == CR2_OK)
+					instance->valueChanged = true;
 
 			}
 			else {
@@ -395,7 +396,7 @@ void Uz3camHandler::AllowArea(int32 tee, int32 ground, int32 putting)
 	PrintResult(TEXT("CR2CMD_AREAALLOW"), res);
 }
 
-void Uz3camHandler::CalCulateTrajectory(FCR2_shotdata* data)
+int Uz3camHandler::CalCulateTrajectory(FCR2_shotdata* data)
 {
 	FCR2_trajectory trj, *ptrj;
 	FCR2_trajectoryEX trjEX, *ptrjEX;
@@ -415,9 +416,11 @@ void Uz3camHandler::CalCulateTrajectory(FCR2_shotdata* data)
 	int cmd = CR2CMD_CALC_TRAJECTORY;
 	int res = Uz3camSDK::CR2_command(hand.h, cmd, p0, p1, p2, 0);
 
-	UJKGameInstance* instance = GAMEINSTANCE(this);
-	instance->DataIOManager->SetTrajectoryData(trjEX);
 	PrintResult(TEXT("CR2CMD_CALC_TRAJECTORY"), res);
+	UJKGameInstance* instance = GAMEINSTANCE(this);
+	if(res == CR2_OK)
+		instance->DataIOManager->SetTrajectoryData(trjEX);
+	return res;
 }
 
 void Uz3camHandler::CheckBallPosition()
@@ -496,5 +499,7 @@ FString Uz3camHandler::PrintResult(const FString title, int result)
 
 int32 cbWrapper(void * h, uint32 status, void * hsd, uint32 cbfuncid, int64 userparam)
 {
+	UJKGameInstance* instance = GAMEINSTANCE(nullptr);
 	return GAMEINSTANCE(nullptr)->SensorManager->handler->CR2_CALLBACKFUNC1(h, status, hsd, cbfuncid, userparam);
+
 }

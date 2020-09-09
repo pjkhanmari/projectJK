@@ -25,9 +25,6 @@ FCR2_shotdataEX UDataIOManager::GetShotData()
 void UDataIOManager::SetTrajectoryData(FCR2_trajectoryEX data)
 {
 	CurrTrajectoryData = data;
-
-	UJKGameInstance* instance = GAMEINSTANCE(this);
-	instance->DelegateCollection->NewTrajectoryDataSet.Broadcast();
 }
 
 FCR2_trajectoryEX UDataIOManager::GetTrajectoryData()

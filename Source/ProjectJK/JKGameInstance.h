@@ -33,4 +33,8 @@ public:
 	UPROPERTY() class UDataIOManager* DataIOManager = nullptr;
 	UPROPERTY() class UDelegateCollection* DelegateCollection = nullptr;
 	
+public:
+	UPROPERTY()
+	bool valueChanged;
+	
 };

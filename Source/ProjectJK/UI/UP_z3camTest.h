@@ -18,6 +18,7 @@ class PROJECTJK_API UUP_z3camTest : public UUserWidget
 public:
 	void NativeConstruct() override;
 	void NativeDestruct() override;
+	void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	void BindUIEvent();
 	void BindDelegateEvent();
@@ -55,44 +56,44 @@ public:
 
 public:
 	//Button
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UButton* BTN_InitSensor;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UButton* BTN_StartSensor;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UButton* BTN_StopSensor;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UButton* BTN_ShutdownSensor;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UButton* BTN_OneButton;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UButton* BTN_Driver;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UButton* BTN_Iron;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UButton* BTN_Putter;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UButton* BTN_Left;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UButton* BTN_Right;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UButton* BTN_GetVersion;
 	//textblock
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	URichTextBlock* RTB_SensorState;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* TB_SensorCheckState;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* TB_Club;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* TB_Hand;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* TB_Version;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* TB_Carry;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* TB_BallSpeed;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_z3camTest)
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* TB_PeakHeight;
 
 

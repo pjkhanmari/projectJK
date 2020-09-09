@@ -28,7 +28,7 @@ UJKGameInstance * UJKGameInstance::GetJKGameInstance(UObject * OutterOwner)
 	//if (ensure(instance == nullptr))
 	if(instance == nullptr)
 	{
-		UE_LOG(LogGamePlay, Error, TEXT("EGameInstance == nullptr"));
+		UE_LOG(LogGamePlay, Error, TEXT("GameInstance == nullptr"));
 		return Instance;
 	}
 	else
@@ -51,6 +51,8 @@ void UJKGameInstance::Init()
 	DataIOManager->Initialize();
 	DelegateCollection = NewObject<UDelegateCollection>((UObject*)GetTransientPackage(), UDelegateCollection::StaticClass());
 	DelegateCollection->Initialize();
+
+	valueChanged = false;
 
 	Super::Init();
 }
