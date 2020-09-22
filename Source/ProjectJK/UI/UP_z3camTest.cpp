@@ -14,7 +14,7 @@ void UUP_z3camTest::NativeConstruct()
 	//BindDelegateEvent();
 	UJKGameInstance* instance = GAMEINSTANCE(this);
 	SensorText = FText::FromString(TEXT(""));
-	instance->GetWorld()->GetTimerManager().SetTimer(SensorCheckTickHandler, this, &UUP_z3camTest::StartCheck, .3f, true, 1.f);
+	instance->GetWorld()->GetTimerManager().SetTimer(SensorCheckTickHandler, this, &UUP_z3camTest::StartCheck, .1f, true, 0);
 }
 
 void UUP_z3camTest::NativeDestruct()

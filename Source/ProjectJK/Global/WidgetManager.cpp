@@ -53,7 +53,7 @@ UUserWidget* UWidgetManager::CreateUserWidget(EWidgetBluePrint wbp)
 	FName key = FName(*FString::FromInt((int32)wbp));
 	FWidgetDirTableRow* pRow = instance->TableManager->GetWidgetDirTableRow(key);
 //	return nullptr;
-	UClass* subclass = (pRow->BlueprintClass).Get();
+	//UClass* subclass = (pRow->BlueprintClass).Get();
 	UUserWidget* widget = CreateWidget<UUserWidget>(instance, pRow->BlueprintClass);
 	if (widget)
 	{

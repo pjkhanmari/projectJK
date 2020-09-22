@@ -259,7 +259,7 @@ class PROJECTJK_API Uz3camHandler : public UObject
 {
 	GENERATED_BODY()
 		
-	Uz3camHandler();
+	Uz3camHandler(const FObjectInitializer& ObjectInitializer);
 	~Uz3camHandler();
 
 public:
@@ -275,6 +275,7 @@ public:
 	int32 (WINAPI CR2_CALLBACKFUNC1)(void* h, uint32 status, void* hsd, uint32 cbfuncid, int32 userparam);
 #endif
 	void Initialize();
+	void DeInitialize();
 	bool Init();
 	FString Start();
 	FString Restart();

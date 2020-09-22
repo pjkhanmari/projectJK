@@ -5,17 +5,18 @@
 #include "ProjectJK/Sensor/z3cam/z3camStructures/CR2_trajectory.h"
 #include "ProjectJK/Sensor/z3cam/z3camStructures/CR2_trajectoryEX.h"
 #include "ProjectJK/ProjectJK.h"
+#include "../../../../../UE4/Engine/Source/Runtime/Engine/Public/Subsystems/Subsystem.h"
+#include "../../../../../UE4/Engine/Source/Runtime/Core/Public/Containers/Array.h"
 
 
-Uz3camHandler::Uz3camHandler()
+Uz3camHandler::Uz3camHandler(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	Initialize();
 }
 
 Uz3camHandler::~Uz3camHandler()
 {
-	if (importSuccess)
-		Uz3camSDK::freeDLL();
+	DeInitialize();
 }
 
 #if defined(_WIN64)
@@ -151,6 +152,12 @@ void Uz3camHandler::Initialize()
 	}
 	else
 		UE_LOG(LogSensor, Log, TEXT("Import DLL failed"));
+}
+
+void Uz3camHandler::DeInitialize()
+{
+	if (importSuccess)
+		Uz3camSDK::freeDLL();
 }
 
 bool Uz3camHandler::Init()
