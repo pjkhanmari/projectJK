@@ -19,4 +19,19 @@ public:
 	void EndPlay(const EEndPlayReason::Type reason) override;
 
 	//void Tick(float DeltaSeconds) override;
+
+	void NumberOne();
+	void NumberTwo();
+	void NumberThree();
+	void NumberFour();
+
+private:
+	void SpawnTestPawn();
+	FVector GetRandomLocation();
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variable)
+	TSubclassOf<APawn> PawnForSpawn;
+	UPROPERTY()
+	TArray<APawn*> Pawns;
 };
