@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "ProjectJK/ProjectJKGameModeBase.h"
+#include "../Actors/MyTestPawn.h"
 #include "TestGameModeBase.generated.h"
+
+class AMyTestPawn;
 
 /**
  * 
@@ -33,5 +36,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variable)
 	TSubclassOf<APawn> PawnForSpawn;
 	UPROPERTY()
-	TArray<APawn*> Pawns;
+	TArray<AMyTestPawn*> Pawns;
 };

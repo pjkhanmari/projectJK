@@ -15,6 +15,7 @@ enum class EUIPage : uint8
 	UIPage_TestUI = 1,
 	UIPage_z3camTest = 2,
 	UIPage_PauseMenu = 3,
+	UIPage_LandCheck = 4
 };
 
 
@@ -25,5 +26,6 @@ enum class EWidgetBluePrint : uint8
 	WBP_TestUI = 1,
 	WBP_z3camTest = 2,
 	WBP_PauseMenu = 3,
-	WBP_PauseButton = 4
+	WBP_PauseButton = 4,
+	WBP_LandCheck = 5
 };

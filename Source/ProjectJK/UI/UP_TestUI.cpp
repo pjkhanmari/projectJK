@@ -24,10 +24,20 @@ void UUP_TestUI::BindUIEvent()
 		BTN_Load_z3camUI->OnClicked.Clear();
 		BTN_Load_z3camUI->OnClicked.AddDynamic(this, &UUP_TestUI::OnClick_Btn_Loadz3camUI);
 	}
+	if (IsValid(BTN_Load_LandCheck))
+	{
+		BTN_Load_LandCheck->OnClicked.Clear();
+		BTN_Load_LandCheck->OnClicked.AddDynamic(this, &UUP_TestUI::OnClick_Btn_LoadLandCheck);
+	}
 }
 
 void UUP_TestUI::OnClick_Btn_Loadz3camUI()
 {
 	UJKGameInstance* instance = GAMEINSTANCE(this);
 	instance->WidgetManager->ChangeUIPage(EUIPage::UIPage_z3camTest);
+}
+void UUP_TestUI::OnClick_Btn_LoadLandCheck()
+{
+	UJKGameInstance* instance = GAMEINSTANCE(this);
+	instance->WidgetManager->ChangeUIPage(EUIPage::UIPage_LandCheck);
 }

@@ -62,6 +62,18 @@ UPawnMovementComponent* AMyTestPawn::GetMovementComponent() const
 	return MyPawnMovementComponent;
 }
 
+void AMyTestPawn::ReceivePossessed(AController* NewController)
+{
+	UE_LOG(LogTemp, Log, TEXT("i'm possessed"));
+	isPossessed = true;
+}
+
+void AMyTestPawn::ReceiveUnpossessed(AController* OldController)
+{
+	UE_LOG(LogTemp, Log, TEXT("i'm Unpossessed"));
+	isPossessed = false;
+}
+
 void AMyTestPawn::BindComponent()
 {
 	//for test

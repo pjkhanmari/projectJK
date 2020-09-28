@@ -37,6 +37,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	UPawnMovementComponent* GetMovementComponent() const override;
 
+	void ReceivePossessed(AController* NewController);
+	void ReceiveUnpossessed(AController* OldController);
 public:
 	void BindComponent();
 
@@ -59,5 +61,6 @@ public:
 	UTestPawnMovementComponent* MyPawnMovementComponent = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TestPawnVariable)
 	float RollTorque = 0.f;
-	
+	UPROPERTY()
+	bool isPossessed = false;
 };

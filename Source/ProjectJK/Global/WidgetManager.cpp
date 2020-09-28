@@ -121,6 +121,12 @@ void UWidgetManager::ShowUIPage(EUIPage PageTogo)
 			ShowUserWidgetCreateAuto(EWidgetBluePrint::WBP_PauseMenu);
 			break;
 		}
+		case EUIPage::UIPage_LandCheck:
+		{
+			ShowUserWidgetCreateAuto(EWidgetBluePrint::WBP_LandCheck);
+			ShowUserWidgetCreateAuto(EWidgetBluePrint::WBP_PauseButton);
+			break;
+		}
 	}
 }
 

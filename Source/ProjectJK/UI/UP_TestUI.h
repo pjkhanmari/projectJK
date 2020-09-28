@@ -24,8 +24,12 @@ public:
 public:
 	UFUNCTION()
 	void OnClick_Btn_Loadz3camUI();
+	UFUNCTION()
+	void OnClick_Btn_LoadLandCheck();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_TestUI)
-		UButton* BTN_Load_z3camUI;
+	UButton* BTN_Load_z3camUI;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UUP_TestUI)
+	UButton* BTN_Load_LandCheck;
 };
