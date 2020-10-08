@@ -18,12 +18,16 @@
 	"Plugins": [
 		{
 			"Name": "SocketIOClient",
-			"Enabled": true,
+			"Enabled": false,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/slug/socket-io-client"
 		},
 		{
 			"Name": "RenderDocPlugin",
 			"Enabled": true
+		},
+		{
+			"Name": "TestPlugins",
+			"Enabled": false
 		}
 	]
 }

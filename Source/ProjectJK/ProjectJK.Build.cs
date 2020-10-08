@@ -8,7 +8,7 @@ public class ProjectJK : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "SocketIOClient", "SocketIOLib", "Json", "SIOJson", "LandCheck"});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "LandCheck", "SocketIOClient", "SocketIOLib", "Json", "SIOJson"});
 
 		// PrivateDependencyModuleNames.AddRange(new string[] {  });
 

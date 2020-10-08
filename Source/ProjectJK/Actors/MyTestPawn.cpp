@@ -51,6 +51,7 @@ void AMyTestPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("ParticleToggle", IE_Pressed, this, &AMyTestPawn::ParticleToggle);
 	PlayerInputComponent->BindAction("CameraZoomIn", IE_Pressed, this, &AMyTestPawn::CameraZoomIn);
 	PlayerInputComponent->BindAction("CameraZoomOut", IE_Pressed, this, &AMyTestPawn::CameraZoomOut);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMyTestPawn::Jump);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMyTestPawn::MoveForward);
 	PlayerInputComponent->BindAxis("TurnRight", this, &AMyTestPawn::TurnRight);
@@ -82,8 +83,6 @@ void AMyTestPawn::BindComponent()
 	MyCamera = FindComponentByClass<UCameraComponent>();
 	MyParticle = FindComponentByClass<UParticleSystemComponent>();
 
-
-
 	///test code for runtime instantiate
 // 	MyParticle = NewObject<UParticleSystemComponent>(MySphereMesh, UParticleSystemComponent::StaticClass(), TEXT("TraceParticles"));
 // 	UParticleSystem* ParticleAsset = Cast<UParticleSystem>(StaticLoadObject(UParticleSystem::StaticClass(), MyParticle, TEXT("/Game/Tropical_Jungle_Pack/Particles/P_Steam_Lit_MOD.P_Steam_Lit_MOD")));
@@ -113,6 +112,15 @@ void AMyTestPawn::TurnRight(float AxisValue)
 
 // 	if (MySphereMesh && AxisValue > 0.f)
 // 		MySphereMesh->AddTorqueInRadians(UKismetMathLibrary::MakeVector(0.f, RollTorque * AxisValue, 0.f));
+}
+
+void AMyTestPawn::Jump()
+{
+	if (MyPawnMovementComponent && (MyPawnMovementComponent->UpdatedComponent == RootComponent))
+	{
+		MyPawnMovementComponent->AddInputVector(GetActorUpVector());
+		UE_LOG(LogTemp, Log, TEXT("Jump"));
+	}
 }
 
 void AMyTestPawn::CameraZoomIn()

@@ -19,10 +19,10 @@ class PROJECTJK_API UDataIOManager : public UObject
 public:
 	void Initialize();
 
-	void SetShotData(FCR2_shotdataEX data);
-	FCR2_shotdataEX GetShotData();
-	void SetTrajectoryData(FCR2_trajectoryEX data);
-	FCR2_trajectoryEX GetTrajectoryData();
+	FORCEINLINE void SetShotData(FCR2_shotdataEX data) { CurrShotData = data; }
+	FORCEINLINE FCR2_shotdataEX GetShotData() { return CurrShotData; }
+	FORCEINLINE void SetTrajectoryData(FCR2_trajectoryEX data) { CurrTrajectoryData = data; }
+	FORCEINLINE FCR2_trajectoryEX GetTrajectoryData() { return CurrTrajectoryData; }
 	
 private:
 	UPROPERTY()

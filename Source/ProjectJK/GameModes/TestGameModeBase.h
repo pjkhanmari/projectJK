@@ -36,5 +36,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Variable)
 	TSubclassOf<APawn> PawnForSpawn;
 	UPROPERTY()
-	TArray<AMyTestPawn*> Pawns;
+	TArray<APawn*> Pawns;
 };

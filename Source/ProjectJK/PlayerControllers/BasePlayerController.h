@@ -19,7 +19,6 @@ public:
 	void BeginPlay() override;
 	void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-protected:
-	virtual void						ProcessPlayerInput(const float DeltaTime, const bool bGamePaused) override;
-	virtual void						SetupInputComponent() override;
+	void ProcessPlayerInput(const float DeltaTime, const bool bGamePaused) override;
+	void SetupInputComponent() override;
 };

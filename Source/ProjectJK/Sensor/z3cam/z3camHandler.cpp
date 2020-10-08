@@ -424,6 +424,7 @@ int Uz3camHandler::CalCulateTrajectory(FCR2_shotdata* data)
 	int res = Uz3camSDK::CR2_command(hand.h, cmd, p0, p1, p2, 0);
 
 	PrintResult(TEXT("CR2CMD_CALC_TRAJECTORY"), res);
+
 	UJKGameInstance* instance = GAMEINSTANCE(this);
 	if(res == CR2_OK)
 		instance->DataIOManager->SetTrajectoryData(trjEX);

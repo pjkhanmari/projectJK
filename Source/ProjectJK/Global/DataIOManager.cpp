@@ -11,23 +11,3 @@ void UDataIOManager::Initialize()
 // 	if (CurrShotData == nullptr)
 // 		CurrShotData = new FCR2_shotdataEX();
 }
-
-void UDataIOManager::SetShotData(FCR2_shotdataEX data)
-{
-	CurrShotData = data;
-}
-
-FCR2_shotdataEX UDataIOManager::GetShotData()
-{
-	return CurrShotData;
-}
-
-void UDataIOManager::SetTrajectoryData(FCR2_trajectoryEX data)
-{
-	CurrTrajectoryData = data;
-}
-
-FCR2_trajectoryEX UDataIOManager::GetTrajectoryData()
-{
-	return CurrTrajectoryData;
-}

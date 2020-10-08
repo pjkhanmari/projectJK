@@ -44,6 +44,7 @@ public:
 
 	void MoveForward(float AxisValue);
 	void TurnRight(float AxisValue);
+	void Jump();
 	void CameraZoomIn();
 	void CameraZoomOut();
 	void ParticleToggle();
