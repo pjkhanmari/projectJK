@@ -4,12 +4,19 @@
 #include "UP_TestUI.h"
 #include "ProjectJK/JKGameInstance.h"
 #include "ProjectJK/ProjectJK.h"
-
+#include <Engine/EngineBaseTypes.h>
+#include "Editor/UnrealEd/Classes/Editor/EditorEngine.h"
+#include "UObject/Linker.h"
 
 void UUP_TestUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 	BindUIEvent();
+	//UEditorEngine* const EditorEngine = CastChecked<UEditorEngine>(GAMEINSTANCE(this)->GetEngine());
+	FURL url = FURL(TEXT("World'/GameBaseProcess/GameModeTestMap.GameModeTestMap'"));
+	//url = FURL(NULL, *EditorEngine->BuildPlayWorldURL(TEXT("World'/GameBaseProcess/GameModeTestMap.GameModeTestMap'"), false, FString()), TRAVEL_Absolute);
+	//url.Map = TEXT("World'/GameBaseProcess/GameModeTestMap.GameModeTestMap'");
+	this->GetWorld()->SetGameMode(url);
 }
 
 void UUP_TestUI::NativeDestruct()

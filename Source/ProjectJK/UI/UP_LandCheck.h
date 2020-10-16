@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/CheckBox.h"
-#include <LandCheckActor.h>
+#include "../Actors/LandCheckActor.h"
 #include "UP_LandCheck.generated.h"
 
 class ALandCheckActor;

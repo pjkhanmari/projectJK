@@ -21,8 +21,8 @@ void AGolfBall::BeginPlay()
 	
 	BindComponent();
 	
-	MySphereMesh->OnComponentHit.Clear();
-	MySphereMesh->OnComponentHit.AddDynamic(this, &AGolfBall::OnHit);
+	//MySphereMesh->OnComponentHit.Clear();
+	//MySphereMesh->OnComponentHit.AddDynamic(this, &AGolfBall::OnHit);
 
 }
 
@@ -48,31 +48,36 @@ void AGolfBall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPr
 		UE_LOG(LogTemp, Log, TEXT("asdfSSADFASDF ------ water"))
 }
 
+void AGolfBall::InitializeMoveComponent()
+{
+}
+
 void AGolfBall::BindComponent()
 {
 	MySphereMesh = FindComponentByClass<UStaticMeshComponent>();
 	MySpringArm = FindComponentByClass<USpringArmComponent>();
 	MyCamera = FindComponentByClass<UCameraComponent>();
+	//MyMoveComponent = FindComponentByClass<URealisticProjectileComponent>();
 }
 
 void AGolfBall::MoveForward(float AxisValue)
 {
-	if (MySphereMesh)
-		MySphereMesh->AddTorqueInRadians(UKismetMathLibrary::MakeVector(RollTorque * AxisValue, 0.f, 0.f));
+// 	if (MySphereMesh)
+// 		MySphereMesh->AddTorqueInRadians(UKismetMathLibrary::MakeVector(RollTorque * AxisValue, 0.f, 0.f));
 }
 
 void AGolfBall::TurnRight(float AxisValue)
 {
-	if (MySphereMesh)
-		MySphereMesh->AddTorqueInRadians(UKismetMathLibrary::MakeVector(0.f, RollTorque * AxisValue, 0.f));
+// 	if (MySphereMesh)
+// 		MySphereMesh->AddTorqueInRadians(UKismetMathLibrary::MakeVector(0.f, RollTorque * AxisValue, 0.f));
 }
 
 void AGolfBall::Jump()
 {
 	if (isGround)
 	{
-		MySphereMesh->AddImpulse(FVector(0.f, 0.f, 500000));
-		isGround = false;
+// 		MySphereMesh->AddImpulse(FVector(0.f, 0.f, 500000));
+// 		isGround = false;
 	}
 }
 

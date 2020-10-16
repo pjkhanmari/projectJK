@@ -7,6 +7,7 @@
 #include "ProjectJK/ProjectJK.h"
 #include "../../../../../UE4/Engine/Source/Runtime/Engine/Public/Subsystems/Subsystem.h"
 #include "../../../../../UE4/Engine/Source/Runtime/Core/Public/Containers/Array.h"
+#include "Kismet/GameplayStatics.h"
 
 
 Uz3camHandler::Uz3camHandler(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -95,8 +96,7 @@ int32 Uz3camHandler::CR2_CALLBACKFUNC1(void* h, uint32 status, void* hsd, uint32
 				psd->clubpathX10 = psdEX1->clubpathX1000 / 100;
 
 				if (CalCulateTrajectory(psd) == CR2_OK)
-					instance->valueChanged = true;
-
+					instance->isShotEvent = true;
 			}
 			else {
 				UE_LOG(LogSensor, Log, TEXT("cbfunc_id : %d is NOT supported yet.."), cbfuncid);
@@ -387,7 +387,7 @@ int Uz3camHandler::GetSensorState()
 #endif
 	int cmd = CR2CMD_SENSORSTATUS;
 	int res = Uz3camSDK::CR2_command(hand.h, cmd, p0, 0, 0, 0);
-	PrintResult(TEXT("CR2CMD_SENSORSTATUS"), res);
+	//PrintResult(TEXT("CR2CMD_SENSORSTATUS"), res);
 
 	return sensor_status;
 }

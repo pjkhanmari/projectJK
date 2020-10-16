@@ -7,7 +7,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "TestPawnMovementComponent.h"
+#include "RMPP/RealisticProjectileComponent.h"
 #include "GolfBall.generated.h"
+
+class URealisticProjectileComponent;
 
 UCLASS()
 class PROJECTJK_API AGolfBall : public APawn
@@ -33,6 +36,8 @@ public:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
+	void InitializeMoveComponent();
+
 	void BindComponent();
 
 	void MoveForward(float AxisValue);
@@ -48,6 +53,8 @@ public:
 	USpringArmComponent* MySpringArm = nullptr;
 	UPROPERTY()
 	UCameraComponent* MyCamera = nullptr;
+	UPROPERTY()
+	URealisticProjectileComponent* MyMoveComponent = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = GolfBall)
 	float RollTorque = 0.f;
 	UPROPERTY()

@@ -5,7 +5,11 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "ProjectJK/Global/DefineUI.h"
+#include "UP_DebugShotp.h"
+#include "../JKGameInstance.h"
 #include "UP_z3camTest.generated.h"
+
+class UUP_DebugShotp;
 
 /**
  * 
@@ -18,10 +22,8 @@ class PROJECTJK_API UUP_z3camTest : public UUserWidget
 public:
 	void NativeConstruct() override;
 	void NativeDestruct() override;
-	void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	void BindUIEvent();
-	void BindDelegateEvent();
 	void SetSensorCommandResultText(FString text);
 	void SetClubText(FString text);
 	void SetHandText(FString text);
@@ -53,6 +55,8 @@ public:
 	void OnClicked_SelectRight();
 	UFUNCTION()
 	void OnClicked_GetVersion();
+	UFUNCTION()
+	void OnClicked_DebugShot();
 
 public:
 	//Button
@@ -78,6 +82,8 @@ public:
 	UButton* BTN_Right;
 	UPROPERTY(meta = (BindWidget))
 	UButton* BTN_GetVersion;
+	UPROPERTY(meta = (BindWidget))
+	UButton* BTN_DebugShot;
 	//textblock
 	UPROPERTY(meta = (BindWidget))
 	URichTextBlock* RTB_SensorState;
@@ -95,9 +101,12 @@ public:
 	UTextBlock* TB_BallSpeed;
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* TB_PeakHeight;
-
+	UPROPERTY(meta = (BindWidget))
+	UUserWidget* UP_DebugShotMenu;
 
 private:
+	UPROPERTY()
+	UJKGameInstance* instance;
 	UPROPERTY()
 	FTimerHandle SensorCheckTickHandler;
 	UPROPERTY()

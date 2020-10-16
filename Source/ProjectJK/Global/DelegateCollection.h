@@ -22,5 +22,7 @@ public:
 public:
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = DelegateCollection)
 	FDelegate_NoParam NewTrajectoryDataSet;
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = DelegateCollection)
+	FDelegate_NoParam FlyEnd;
 	
 };

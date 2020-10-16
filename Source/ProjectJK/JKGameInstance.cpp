@@ -52,9 +52,8 @@ void UJKGameInstance::Init()
 	DelegateCollection = NewObject<UDelegateCollection>((UObject*)GetTransientPackage(), UDelegateCollection::StaticClass());
 	DelegateCollection->Initialize();
 
-	valueChanged = false;
-
 	Super::Init();
+
 }
 
 void UJKGameInstance::Shutdown()
@@ -66,4 +65,10 @@ void UJKGameInstance::Shutdown()
 	DataIOManager->ConditionalBeginDestroy();
 	DelegateCollection->ConditionalBeginDestroy();
 	Super::Shutdown();
+}
+
+void UJKGameInstance::SpawnEventManager()
+{
+	if (!EventManager)
+		EventManager = (ACB_EventManager*)GetWorld()->SpawnActor(ACB_EventManager::StaticClass());
 }

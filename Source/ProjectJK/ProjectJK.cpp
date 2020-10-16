@@ -8,3 +8,5 @@ IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, ProjectJK, "ProjectJK" );
 DEFINE_LOG_CATEGORY(LogSensor);
 
 DEFINE_LOG_CATEGORY(LogGamePlay);
+
+DEFINE_LOG_CATEGORY(LogTrajectory);

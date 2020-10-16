@@ -28,6 +28,15 @@
 		{
 			"Name": "TestPlugins",
 			"Enabled": false
+		},
+		{
+			"Name": "LandCheck",
+			"Enabled": false
+		},
+		{
+			"Name": "RMPP",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/05b3c06715ba4f61aebe67856235b475"
 		}
 	]
 }

@@ -19,10 +19,15 @@ void ATestGameModeBase::BeginPlay()
 // 	for (FPhysicalSurfaceName sn : UPhysicsSettings::Get()->PhysicalSurfaces)
 // 		UE_LOG(LogSensor, Log, TEXT("%s"), *(sn.Name.ToString()));
 	auto pc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	Pawns.Emplace(pc->GetPawn());
+	auto pawn = (AGolfBall*)pc->GetPawn();
+	auto realisticComponent = pawn->FindComponentByClass<URealisticProjectileComponent>();
+	realisticComponent->Deactivate(); //doesn't work have to find out the reason
+	realisticComponent->DestroyComponent();
+	Pawns.Emplace(pawn);
 // 	for (int32 i = 0; i < 3; i++)
 // 		SpawnTestPawn();
 
+	instance->SpawnEventManager();
 	UE_LOG(LogTemp, Log, TEXT("My Pawns count is %d"), Pawns.Num());
 }
 

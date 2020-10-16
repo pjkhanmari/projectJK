@@ -11,26 +11,17 @@ void UUP_z3camTest::NativeConstruct()
 {
 	Super::NativeConstruct();
 	BindUIEvent();
-	//BindDelegateEvent();
-	UJKGameInstance* instance = GAMEINSTANCE(this);
+	instance = GAMEINSTANCE(this);
 	SensorText = FText::FromString(TEXT(""));
+	instance->DelegateCollection->NewTrajectoryDataSet.AddDynamic(this, &UUP_z3camTest::SetUIbyCallback);
 	instance->GetWorld()->GetTimerManager().SetTimer(SensorCheckTickHandler, this, &UUP_z3camTest::StartCheck, .1f, true, 0);
 }
 
 void UUP_z3camTest::NativeDestruct()
 {
+	instance->DelegateCollection->NewTrajectoryDataSet.RemoveDynamic(this, &UUP_z3camTest::SetUIbyCallback);
 	UKismetSystemLibrary::K2_ClearAndInvalidateTimerHandle(GetWorld(), SensorCheckTickHandler);
 	Super::NativeDestruct();
-}
-
-void UUP_z3camTest::NativeTick(const FGeometry & MyGeometry, float InDeltaTime)
-{
-	UJKGameInstance* instance = GAMEINSTANCE(this);
-	if (instance->valueChanged)
-	{
-		SetUIbyCallback();
-		instance->valueChanged = false;
-	}
 }
 
 void UUP_z3camTest::BindUIEvent()
@@ -90,14 +81,11 @@ void UUP_z3camTest::BindUIEvent()
 		BTN_GetVersion->OnClicked.Clear();
 		BTN_GetVersion->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_GetVersion);
 	}
-}
-
-void UUP_z3camTest::BindDelegateEvent()
-{
-	UJKGameInstance* instance = GAMEINSTANCE(this);
-	instance->DelegateCollection->NewTrajectoryDataSet.Clear();
-	instance->DelegateCollection->NewTrajectoryDataSet.AddDynamic(this, &UUP_z3camTest::SetUIbyCallback);
-
+	if (IsValid(BTN_DebugShot))
+	{
+		BTN_DebugShot->OnClicked.Clear();
+		BTN_DebugShot->OnClicked.AddDynamic(this, &UUP_z3camTest::OnClicked_DebugShot);
+	}
 }
 
 void UUP_z3camTest::SetSensorCommandResultText(FString text)
@@ -117,7 +105,6 @@ void UUP_z3camTest::SetHandText(FString text)
 
 void UUP_z3camTest::StartCheck()
 {
-	UJKGameInstance* instance = GAMEINSTANCE(this);
 	if (!instance->SensorManager->IsSensorConnected())
 		return;
 
@@ -150,7 +137,6 @@ void UUP_z3camTest::StartCheck()
 
 void UUP_z3camTest::SetUIbyCallback()
 {
-	UJKGameInstance* instance = GAMEINSTANCE(this);
 	FCR2_trajectoryEX trj = instance->DataIOManager->GetTrajectoryData();
 	FCR2_shotdataEX sd = instance->DataIOManager->GetShotData();
 
@@ -163,37 +149,31 @@ void UUP_z3camTest::SetUIbyCallback()
 
 void UUP_z3camTest::OnClicked_InitSensor()
 {
-	UJKGameInstance* instance = GAMEINSTANCE(this);
 	SetSensorCommandResultText(instance->SensorManager->InitSensor());
 }
 
 void UUP_z3camTest::OnClicked_StartSensor()
 {
-	UJKGameInstance* instance = GAMEINSTANCE(this);
 	SetSensorCommandResultText(instance->SensorManager->StartSensor());
 }
 
 void UUP_z3camTest::OnClicked_StopSensor()
 {
-	UJKGameInstance* instance = GAMEINSTANCE(this);
 	SetSensorCommandResultText(instance->SensorManager->StopSensor());
 }
 
 void UUP_z3camTest::OnClicked_ShutdownSensor()
 {
-	UJKGameInstance* instance = GAMEINSTANCE(this);
 	SetSensorCommandResultText(instance->SensorManager->ShutdownSensor());
 }
 
 void UUP_z3camTest::OnClicked_OneButton()
 {
-	UJKGameInstance* instance = GAMEINSTANCE(this);
 	SetSensorCommandResultText(instance->SensorManager->StartProcess());
 }
 
 void UUP_z3camTest::OnClicked_SelectDriver()
 {
-	UJKGameInstance* instance = GAMEINSTANCE(this);
 	instance->SensorManager->club = CR2CLUB_DRIVER;
 	SetClubText(FString(TEXT("Driver")));
 	instance->SensorManager->SetProperty();
@@ -201,7 +181,6 @@ void UUP_z3camTest::OnClicked_SelectDriver()
 
 void UUP_z3camTest::OnClicked_SelectIron()
 {
-	UJKGameInstance* instance = GAMEINSTANCE(this);
 	instance->SensorManager->club = CR2CLUB_IRON7;
 	SetClubText(FString(TEXT("Iron")));
 	instance->SensorManager->SetProperty();
@@ -209,7 +188,6 @@ void UUP_z3camTest::OnClicked_SelectIron()
 
 void UUP_z3camTest::OnClicked_SelectPutter()
 {
-	UJKGameInstance* instance = GAMEINSTANCE(this);
 	instance->SensorManager->club = CR2CLUB_PUTTER;
 	SetClubText(FString(TEXT("Putter")));
 	instance->SensorManager->SetProperty();
@@ -217,7 +195,6 @@ void UUP_z3camTest::OnClicked_SelectPutter()
 
 void UUP_z3camTest::OnClicked_SelectLeft()
 {
-	UJKGameInstance* instance = GAMEINSTANCE(this);
 	instance->SensorManager->hand = 1;
 	SetHandText(FString(TEXT("Left")));
 	instance->SensorManager->SetProperty();
@@ -225,7 +202,6 @@ void UUP_z3camTest::OnClicked_SelectLeft()
 
 void UUP_z3camTest::OnClicked_SelectRight()
 {
-	UJKGameInstance* instance = GAMEINSTANCE(this);
 	instance->SensorManager->hand = 0;
 	SetHandText(FString(TEXT("Right")));
 	instance->SensorManager->SetProperty();
@@ -233,6 +209,13 @@ void UUP_z3camTest::OnClicked_SelectRight()
 
 void UUP_z3camTest::OnClicked_GetVersion()
 {
-	UJKGameInstance* instance = GAMEINSTANCE(this);
 	TB_Version->SetText(FText::FromString(instance->SensorManager->GetVersion()));
+}
+
+void UUP_z3camTest::OnClicked_DebugShot()
+{
+	if (UP_DebugShotMenu->IsVisible())
+		UP_DebugShotMenu->SetVisibility(ESlateVisibility::Hidden);
+	else
+		UP_DebugShotMenu->SetVisibility(ESlateVisibility::Visible);
 }

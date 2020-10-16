@@ -17,3 +17,5 @@ extern PROJECTJK_API class UJKGameInstance* Instance;
 DECLARE_LOG_CATEGORY_EXTERN(LogSensor, Log, All);
 //Log during game startup
 DECLARE_LOG_CATEGORY_EXTERN(LogGamePlay, Log, All);
+//Trajectory Point Log
+DECLARE_LOG_CATEGORY_EXTERN(LogTrajectory, Log, All);

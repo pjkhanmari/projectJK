@@ -13,5 +13,10 @@ UCLASS()
 class PROJECTJK_API UUtilFunctionLibSensor : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
+
+
+private:
+	UPROPERTY()
+	UStaticMesh* sm_cylinder;
 	
 };
